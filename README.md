@@ -14,4 +14,5 @@ Tech Stack Being Used:
 - SQLAlchemy (Sqlite3)
 - Flask
 - Vue.Js
+- Bootstrap 5
 - Python 3.11
