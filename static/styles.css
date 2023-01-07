@@ -1,6 +1,7 @@
 #heading {
-    background-color: rgba(35, 64, 128, 0.767);
-    color: white;
+    /* background-color:#647295; */
+    background: #2B262D;
+    color: #F8D4BA;
     text-align: center;
     align-items: center;
     padding-bottom: 3%;
@@ -10,11 +11,21 @@
 button {
     margin-top: 1%;
     width: 180px;
+    background: #F8D4BA;
+    color: #2B262D;
+    border-color: #2B262D;
+}
+
+button:hover {
+    background: #2B262D;
+    color: #F8D4BA;
+    border-color: #F8D4BA;
 }
 
 body {
     align-items: center;
     height: 1000px;
+    background: #F8D4BA;
 }
 
 /* #board {
@@ -32,9 +43,15 @@ input {
     margin-top: 5%;
 }
 
+input[type=password],input[type=email], input::placeholder{
+    background:#2B262D;
+    color:#F8D4BA;
+    border: 0px;
+}
+
 .container{
     text-align: center;
-    background: white;
+
 }
 
 body {
