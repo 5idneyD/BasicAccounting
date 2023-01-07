@@ -1,0 +1,42 @@
+#heading {
+    background-color: rgba(35, 64, 128, 0.767);
+    color: white;
+    text-align: center;
+    align-items: center;
+    padding-bottom: 3%;
+    padding-top: 5%;
+}
+
+button {
+    margin-top: 1%;
+    width: 180px;
+}
+
+body {
+    align-items: center;
+    height: 1000px;
+}
+
+/* #board {
+    border: 2px solid black;
+    height: 66%;
+    width: 40%;
+    align-items: center;
+    text-align: center;
+    margin: auto;
+    padding-top: 10%;
+} */
+
+input {
+    text-align: center;
+    margin-top: 5%;
+}
+
+.container{
+    text-align: center;
+    background: white;
+}
+
+body {
+    overflow-y:hidden;
+  }
