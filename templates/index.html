@@ -1,39 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="../static/styles.css" />
-    <title>Simple Accounting</title>
-  </head>
-  <body>
-    <div id="heading">
-      <h1><u>Simple Accounting</u></h1>
-      <h2>It's Accounting, Made Simple</h2>
-      <div>
-        <a href="login"><button name="loginButton">Log-In</button></a>
-        <br />
-        <a href="signup"><button name="signinButton">Sign-Up</button></a>
-      </div>
-    </div>
-    <div id="main"></div>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+			crossorigin="anonymous" />
+		<link rel="stylesheet" href="../static/styles.css" />
+		<title>Simple Accounting</title>
+	</head>
+	<body>
+		<div id="heading">
+			<h1><u>Simple Accounting</u></h1>
+			<h2>It's Accounting, Made Simple</h2>
+			<div>
+				<a href="login"><button name="loginButton">Log-In</button></a>
+				<br />
+				<a href="signup"><button name="signinButton">Sign-Up</button></a>
+			</div>
+		</div>
+		<div id="main"></div>
 
-    <!-- <div>
+		<!-- <div>
     <h1>{{message}}</h1>
     <h1 id="vm">[[greeting]]</h1>
     </div> -->
 
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="{{ url_for('static', filename='index.js') }}"></script>
-  </body>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="{{ url_for('static', filename='index.js') }}"></script>
+	</body>
 </html>

@@ -15,12 +15,13 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + \
     os.path.join(basedir, "./database/database.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=1)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)
 app.config['SECRET_KEY'] = os.urandom(12).hex()
 
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
 
 class Companies(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
@@ -37,13 +38,16 @@ class Users(db.Model):
     password = db.Column(db.String(40))
     admin = db.Column(db.Boolean)
 
+
 with app.app_context():
     db.create_all()
+
 
 @app.before_request
 def before_request():
     # session.permanent = True
     app.permanent_session_lifetime = timedelta(minutes=1)
+
 
 @app.route("/")
 def index():
@@ -56,7 +60,8 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
 
-        users = db.session.execute("SELECT * FROM Users WHERE email='" + email + "';")
+        users = db.session.execute(
+            "SELECT * FROM Users WHERE email='" + email + "';")
         # each user contains id, company, email & password
         for user in users:
             print(user)
@@ -115,6 +120,7 @@ def dashboard(company, username, key):
         return render_template("dashboard.html", company=company, username=username)
     else:
         return redirect(url_for("login"))
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
