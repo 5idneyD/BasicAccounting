@@ -12,7 +12,10 @@ Features I am planning on adding:
 
 Tech Stack Being Used:
 - SQLAlchemy (Sqlite3)
-- Flask
+
+``` html
+<p style="color: red;">- Flask</p>
+```
 
 -  <strike>Vue.Js</strike>   Vanilla.Js
 
