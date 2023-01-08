@@ -51,9 +51,4 @@ input[type=password],input[type=email], input::placeholder{
 
 .container{
     text-align: center;
-
 }
-
-body {
-    overflow-y:hidden;
-  }

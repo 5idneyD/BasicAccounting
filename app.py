@@ -104,7 +104,6 @@ def admin(company):
         db.session.add(new_user)
         db.session.commit()
 
-
     return render_template("admin.html", company=company)
 
 
