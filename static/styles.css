@@ -75,15 +75,33 @@ li {
     display: flex;
     align-items: center;
     justify-content: center;
+    text-decoration: underline;
 }
 
-/* Change the link color on hover */
-li {
-    text-decoration: underline;
+/* li.menuHead:hover > a[data-expanded="false"] {
+    background-color: var(--dark);
+    color: var(--light);
+} */
+
+li.menuHead:has(a[data-expanded="false"]):hover {
+    background-color: var(--dark) !important;
+    color: var(--light) !important;
+}
+
+a {
+    cursor: pointer;
 }
 a.menuOption {
     color: var(--dark);
     background-color: var(--light);
     width: 100%;
-    
+}
+
+a[data-expanded="true"],
+a[data-expanded="false"] {
+    font-size: large;
+}
+
+a.menuOption {
+    font-size: medium;
 }

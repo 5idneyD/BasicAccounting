@@ -22,11 +22,11 @@
 			<div class="row">
 				<div id="nav" class="col-3 m-0 p-0">
 					<ul>
-						<li id="salesLedgerMenu"><a id="salesLedger" data-expanded="false">Sales Ledger</a><br /></li>
-						<li id="purchaseLedgerMenu">
+						<li id="salesLedgerMenu" class="menuHead"><a id="salesLedger" data-expanded="false">Sales Ledger</a><br /></li>
+						<li id="purchaseLedgerMenu"  class="menuHead">
 							<a id="purchaseLedger" data-expanded="false">Purchase Ledger</a><br />
 						</li>
-						<li id="financialsMenu"><a id="financials" data-expanded="false">Financials</a><br /></li>
+						<li id="financialsMenu"  class="menuHead"><a id="financials" data-expanded="false">Financials</a><br /></li>
 					</ul>
 				</div>
 				<div id="data" class="col-9"></div>
@@ -40,57 +40,6 @@
 
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<script src="{{ url_for('static', filename='index.js') }}"></script>
-		<script>
-			document.addEventListener(
-				"click",
-				function (e) {
-					var menu = document.querySelector("#" + e.target.id);
-
-					console.log(menu.dataset.expanded);
-					if (menu.dataset.expanded == "false") {
-						menu.parentElement.style.height = "14vh";
-						if (menu.id == "salesLedger") {
-							menu.insertAdjacentHTML(
-								"beforeend",
-								"<br class=" + e.target.id + "Option><a class='menuOption " +
-									e.target.id +
-									"Option'>Add Sales Invoice</a><br class=" + e.target.id + "Option><a class='menuOption " +
-									e.target.id +
-									"Option'>View Customers</a>",
-							);
-							menu.dataset.expanded = "true";
-						} else if (menu.id == "purchaseLedger") {
-							menu.insertAdjacentHTML(
-								"beforeend",
-								"<br class=" + e.target.id + "Option><a class='menuOption " +
-									e.target.id +
-									"Option'>Add Purchase Invoice</a><br class=" + e.target.id + "Option><a class='menuOption " +
-									e.target.id +
-									"Option'>View Suppliers</a>",
-							);
-							menu.dataset.expanded = "true";
-						} else {
-							menu.insertAdjacentHTML(
-								"beforeend",
-								"<br class=" + e.target.id + "Option><a class='menuOption " +
-									e.target.id +
-									"Option'>Trial Balance</a><br class=" + e.target.id + "Option><a class='menuOption " +
-									e.target.id +
-									"Option'>Chart Of Accounts</a>",
-							);
-							menu.dataset.expanded = "true";
-						}
-					} else {
-						var options = document.querySelectorAll("." + e.target.id + "Option");
-						options.forEach((option) => {
-							option.remove();
-							menu.dataset.expanded = "false";
-							menu.parentElement.style.height = "8vh";
-						});
-					}
-				},
-				false,
-			);
-		</script>
+        <script src="{{ url_for('static', filename='navDropdown.js') }}"></script>
 	</body>
 </html>
