@@ -13,6 +13,8 @@ Features I am planning on adding:
 Tech Stack Being Used:
 - SQLAlchemy (Sqlite3)
 - Flask
+<strike>
 - Vue.Js
+</strike>
 - Bootstrap 5
 - Python 3.11
