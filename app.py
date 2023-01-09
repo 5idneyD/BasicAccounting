@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, g
 from flask_migrate import Migrate
+import flask_login
 import os
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
@@ -15,12 +16,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + \
     os.path.join(basedir, "./database/database.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)
+app.config['SESSION_PERMANENT'] = False
 app.config['SECRET_KEY'] = os.urandom(12).hex()
+app.secret_key = os.urandom(12).hex()
 
 
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 
 class Companies(db.Model):
@@ -45,8 +46,9 @@ with app.app_context():
 
 @app.before_request
 def before_request():
-    # session.permanent = True
+    session.permanent = True
     app.permanent_session_lifetime = timedelta(minutes=1)
+    session.modified = True
 
 
 @app.route("/")
@@ -66,12 +68,13 @@ def login():
         for user in users:
             print(user)
             if user["password"] == password:
+                session[email] = os.urandom(12).hex()
                 if user["admin"] == True:
-                    return redirect(f"/admin/{user['company']}")
+                    # return redirect(f"/admin/{user['company']}")
+                    return redirect(url_for("admin", company=user['company']))
                 else:
-                    session_key = app.config['SECRET_KEY']
-                    return redirect(f"/{user['company']}/dashboard/{user['username']}/{session_key}")
-        # print(users)
+                    return redirect(url_for("dashboard", company=user['company'],
+                                            email=email, username=user['username'], session_key=session[email]))
 
     return render_template("login.html")
 
@@ -112,15 +115,12 @@ def admin(company):
     return render_template("admin.html", company=company)
 
 
-@app.route("/<company>/dashboard/<username>/<key>", methods=["POST", "GET"])
-def dashboard(company, username, key):
-
-    # print(app.config['SECRET_KEY'])
-    if key == app.config['SECRET_KEY']:
+@app.route("/<company>/dashboard/<email>/<username>/<session_key>", methods=["POST", "GET"])
+def dashboard(company, email, username, session_key):
+    if session[email] == session_key:
         return render_template("dashboard.html", company=company, username=username)
     else:
         return redirect(url_for("login"))
-
 
 
 if __name__ == "__main__":

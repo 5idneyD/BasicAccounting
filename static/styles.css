@@ -75,7 +75,6 @@ li {
     display: flex;
     align-items: center;
     justify-content: center;
-    text-decoration: underline;
 }
 
 /* li.menuHead:hover > a[data-expanded="false"] {
@@ -90,11 +89,16 @@ li.menuHead:has(a[data-expanded="false"]):hover {
 
 a {
     cursor: pointer;
+    text-decoration: none;
 }
 a.menuOption {
     color: var(--dark);
     background-color: var(--light);
     width: 100%;
+    font-size: medium;
+}
+a.menuOption:hover {
+    text-decoration: underline;
 }
 
 a[data-expanded="true"],
@@ -102,6 +106,3 @@ a[data-expanded="false"] {
     font-size: large;
 }
 
-a.menuOption {
-    font-size: medium;
-}
