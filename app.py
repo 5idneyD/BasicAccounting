@@ -39,6 +39,12 @@ class Users(db.Model):
     password = db.Column(db.String(40))
     admin = db.Column(db.Boolean)
 
+class ChartOfAccounts(db.Model):
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    company = db.Column(db.String(40))
+    nominal = db.Column(db.Integer, nullable=False)
+    account_name = db.Column(db.String(40))
+
 
 with app.app_context():
     db.create_all()
@@ -115,13 +121,30 @@ def admin(company):
     return render_template("admin.html", company=company)
 
 
-@app.route("/<company>/dashboard/<email>/<username>/<session_key>", methods=["POST", "GET"])
+@app.route("/<company>/<email>/<username>/<session_key>/dashboard", methods=["POST", "GET"])
 def dashboard(company, email, username, session_key):
-    if session[email] == session_key:
-        return render_template("dashboard.html", company=company, username=username)
-    else:
+    
+    try:
+        if session[email] == session_key:
+            return render_template("dashboard.html", company=company, email=email, username=username, session_sey=session_key)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        # Username is not in session
         return redirect(url_for("login"))
+    return 0
 
+@app.route("/<company>/<email>/<username>/<session_key>/chartOfAccounts", methods=["POST", "GET"])
+def chartOfAccounts(company, email, username, session_key):
+    try:
+        if session[email] == session_key:
+            return render_template("chartOfACcounts.html", company=company, email=email, username=username, session_sey=session_key)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        # Username is not in session
+        return redirect(url_for("login"))
+    return 0
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
