@@ -16,6 +16,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + \
     os.path.join(basedir, "./database/database.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SESSION_PERMANENT'] = False
 app.config['SECRET_KEY'] = os.urandom(12).hex()
 app.secret_key = os.urandom(12).hex()
@@ -69,7 +70,7 @@ def login():
         password = request.form["password"]
 
         users = db.session.execute(
-            "SELECT * FROM Users WHERE email='" + email + "';")
+            "SELECT * FROM Users;-- WHERE email='" + email + "';")
         # each user contains id, company, email & password
         for user in users:
             print(user)

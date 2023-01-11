@@ -10,39 +10,54 @@
 			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 			crossorigin="anonymous" />
 		<link rel="stylesheet" href="../static/styles.css" />
+
 		<title>Simple Accounting</title>
 	</head>
-	<body>
+	<body onload="changeForm()">
 		<div id="heading">
-			<h1><u>{{company}} Admin</u></h1>
+			<h1><u>{{company}}</u></h1>
+			<h2>Admin</h2>
 		</div>
 		<form id="form" method="post">
-			<div class="d-flex flex-column mt-5 min-vw-100">
-				<div class="d-flex flex-grow-1 justify-content-center align-items-center">
-					<div class="container w-50">
-						<div class="row">
-							<div class="col">
-								<input type="text" name="name" placeholder="name" aria-required="true"/>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<input type="email" name="email" placeholder="email" aria-required="true"/>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<input type="password" name="password" placeholder="password" aria-required="true"/>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col mt-5">
-								<button type="submit" name="signinButton">Add User</button>
-							</div>
-						</div>
+			<div class="container">
+				<div class="row align-items-center justify-content-center">
+					<div class="col"></div>
+					<div class="col">
+						<button
+							type="button"
+							id="addUserButton"
+							class="adminButton"
+							data-selected="1"
+							onclick="clicked(event.srcElement.id); changeForm()">
+							Add User
+						</button>
 					</div>
+					<div class="col">
+						<button
+							type="button"
+							id="chartOfAccountsButton"
+							class="adminButton"
+							data-selected="0"
+							onclick="clicked(event.srcElement.id); changeForm()">
+							Chart Of Accounts
+						</button>
+					</div>
+					<div class="col">
+						<button
+							type="button"
+							id="removeUserButton"
+							class="adminButton"
+							data-selected="0"
+							onclick="clicked(event.srcElement.id); changeForm()">
+							Delete User
+						</button>
+					</div>
+					<div class="col"></div>
 				</div>
 			</div>
+			<div id="body" class="d-flex flex-column mt-5 min-vw-100"></div>
 		</form>
+		<script type="text/javascript" src="{{url_for('static', filename='admin.js')}}"></script>
+		<script type="text/javascript" src="{{url_for('static', filename='adminButtons.js')}}"></script>
 	</body>
 </html>
