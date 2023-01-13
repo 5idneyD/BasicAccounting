@@ -37,7 +37,7 @@ var addUser = `
             </div>
             <div class="row">
                 <div class="col mt-5">
-                    <button type="submit" name="signinButton">Add User</button>
+                    <button type="submit" name="addUserForm">Add User</button>
                 </div>
             </div>
         </div>
@@ -59,7 +59,7 @@ var removeUser =
             </div>
             <div class="row">
                 <div class="col mt-5">
-                    <button type="submit" name="signinButton">Remove User</button>
+                    <button type="submit" name="removeUserForm">Remove User</button>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@ var chartOfAccounts =
         <div class="container w-50">
             <div class="row">
                 <div class="col">
-                    <input type="name" name="nominal" placeholder="Nominal Code" aria-required="true"/>
+                    <input type="name" name="nominal" placeholder="Nominal Code" minlength='5' aria-required="true"/>
                 </div>
             </div>
             <div class="row">
@@ -80,7 +80,7 @@ var chartOfAccounts =
             </div>
             <div class="row">
                 <div class="col mt-5">
-                    <button type="submit" name="signinButton">Add Nominal Account</button>
+                    <button type="submit" name="addNominalForm">Add Nominal Account</button>
                 </div>
             </div>
         </div>

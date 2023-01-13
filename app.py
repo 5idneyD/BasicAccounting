@@ -40,6 +40,10 @@ class Users(db.Model):
     password = db.Column(db.String(40))
     admin = db.Column(db.Boolean)
 
+    def __repr__(self):
+        return f"<id={self.id}, username={self.username}>, admin={self.admin}"
+
+
 class ChartOfAccounts(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     company = db.Column(db.String(40))
@@ -69,19 +73,20 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
 
-        users = db.session.execute(
-            "SELECT * FROM Users;-- WHERE email='" + email + "';")
+        # users = db.session.execute(
+        #     "SELECT * FROM Users;-- WHERE email='" + email + "';")
+        users = Users.query.filter_by(email=email).all()
+
         # each user contains id, company, email & password
         for user in users:
-            print(user)
-            if user["password"] == password:
+            if user.password == password:
                 session[email] = os.urandom(12).hex()
-                if user["admin"] == True:
+                if user.admin == True:
                     # return redirect(f"/admin/{user['company']}")
-                    return redirect(url_for("admin", company=user['company']))
+                    return redirect(url_for("admin", company=user.company))
                 else:
-                    return redirect(url_for("dashboard", company=user['company'],
-                                            email=email, username=user['username'], session_key=session[email]))
+                    return redirect(url_for("dashboard", company=user.company,
+                                            email=email, username=user.username, session_key=session[email]))
 
     return render_template("login.html")
 
@@ -110,21 +115,38 @@ def signup():
 def admin(company):
 
     if request.method == "POST":
-        new_name = request.form["name"]
-        new_email = request.form["email"]
-        new_password = request.form["password"]
+        if "addUserForm" in request.form:
+            new_name = request.form["name"]
+            new_email = request.form["email"]
+            new_password = request.form["password"]
 
-        new_user = Users(company=company, username=new_name, email=new_email,
-                         password=new_password, admin=False)
-        db.session.add(new_user)
-        db.session.commit()
+            new_user = Users(company=company, username=new_name, email=new_email,
+                             password=new_password, admin=False)
+            db.session.add(new_user)
+            db.session.commit()
+
+        elif "addNominalForm" in request.form:
+            nominal = request.form["nominal"]
+            account_name = request.form["accountName"]
+            new_nominal = ChartOfAccounts(
+                company=company, nominal=nominal, account_name=account_name)
+            db.session.add(new_nominal)
+            db.session.commit()
+
+        elif "removeUserForm" in request.form:
+            user_email = request.form['email']
+            user = Users.query.filter_by(email=user_email, company=company).first()
+            db.session.delete(user)
+            db.session.commit()
+            
+            
 
     return render_template("admin.html", company=company)
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/dashboard", methods=["POST", "GET"])
 def dashboard(company, email, username, session_key):
-    
+
     try:
         if session[email] == session_key:
             return render_template("dashboard.html", company=company, email=email, username=username, session_sey=session_key)
@@ -134,6 +156,7 @@ def dashboard(company, email, username, session_key):
         # Username is not in session
         return redirect(url_for("login"))
     return 0
+
 
 @app.route("/<company>/<email>/<username>/<session_key>/chartOfAccounts", methods=["POST", "GET"])
 def chartOfAccounts(company, email, username, session_key):
@@ -146,6 +169,7 @@ def chartOfAccounts(company, email, username, session_key):
         # Username is not in session
         return redirect(url_for("login"))
     return 0
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
