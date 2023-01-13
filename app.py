@@ -1,6 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, session, g
-from flask_migrate import Migrate
-import flask_login
 import os
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
@@ -58,7 +56,7 @@ with app.app_context():
 @app.before_request
 def before_request():
     session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=1)
+    app.permanent_session_lifetime = timedelta(minutes=20)
     session.modified = True
 
 
@@ -73,16 +71,13 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
 
-        # users = db.session.execute(
-        #     "SELECT * FROM Users;-- WHERE email='" + email + "';")
         users = Users.query.filter_by(email=email).all()
-        print(users)
+
         # each user contains id, company, email & password
         for user in users:
             if user.password == password:
                 session[email] = os.urandom(12).hex()
                 if user.admin == True:
-                    print(user.email)
                     return redirect(url_for("admin", company=user.company, email=email, session_key=session[email]))
                 else:
                     return redirect(url_for("dashboard", company=user.company,
