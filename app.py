@@ -76,14 +76,14 @@ def login():
         # users = db.session.execute(
         #     "SELECT * FROM Users;-- WHERE email='" + email + "';")
         users = Users.query.filter_by(email=email).all()
-
+        print(users)
         # each user contains id, company, email & password
         for user in users:
             if user.password == password:
                 session[email] = os.urandom(12).hex()
                 if user.admin == True:
-                    # return redirect(f"/admin/{user['company']}")
-                    return redirect(url_for("admin", company=user.company))
+                    print(user.email)
+                    return redirect(url_for("admin", company=user.company, email=email, session_key=session[email]))
                 else:
                     return redirect(url_for("dashboard", company=user.company,
                                             email=email, username=user.username, session_key=session[email]))
@@ -102,46 +102,57 @@ def signup():
         new_company = Companies(
             company=company_name, admin_email=company_email, admin_password=company_password)
         db.session.add(new_company)
-        new_admin = Users(company=company_name, username=company_email,
+        new_admin = Users(company=company_name, email=company_email, username=company_email,
                           password=company_password, admin=True)
         db.session.add(new_admin)
         db.session.commit()
 
-        return redirect(f"/admin/{company_name}")
+        session[company_email] = os.urandom(12).hex()
+        return redirect(url_for("admin", company=company_name, email=company_email, session_key=session[company_email]))
     return render_template("signup.html")
 
 
-@app.route("/admin/<company>", methods=["POST", "GET"])
-def admin(company):
+@app.route("/admin/<company>/<email>/<session_key>", methods=["POST", "GET"])
+def admin(company, email, session_key):
 
-    if request.method == "POST":
-        if "addUserForm" in request.form:
-            new_name = request.form["name"]
-            new_email = request.form["email"]
-            new_password = request.form["password"]
+    try:
+        if session[email] == session_key:
+            if request.method == "POST":
+                if "addUserForm" in request.form:
+                    new_name = request.form["name"]
+                    new_email = request.form["email"]
+                    new_password = request.form["password"]
 
-            new_user = Users(company=company, username=new_name, email=new_email,
-                             password=new_password, admin=False)
-            db.session.add(new_user)
-            db.session.commit()
+                    new_user = Users(company=company, username=new_name, email=new_email,
+                                     password=new_password, admin=False)
+                    db.session.add(new_user)
+                    db.session.commit()
 
-        elif "addNominalForm" in request.form:
-            nominal = request.form["nominal"]
-            account_name = request.form["accountName"]
-            new_nominal = ChartOfAccounts(
-                company=company, nominal=nominal, account_name=account_name)
-            db.session.add(new_nominal)
-            db.session.commit()
+                elif "addNominalForm" in request.form:
+                    nominal = request.form["nominal"]
+                    account_name = request.form["accountName"]
+                    new_nominal = ChartOfAccounts(
+                        company=company, nominal=nominal, account_name=account_name)
+                    db.session.add(new_nominal)
+                    db.session.commit()
 
-        elif "removeUserForm" in request.form:
-            user_email = request.form['email']
-            user = Users.query.filter_by(email=user_email, company=company).first()
-            db.session.delete(user)
-            db.session.commit()
-            
-            
+                elif "removeUserForm" in request.form:
+                    user_email = request.form['email']
+                    user = Users.query.filter_by(
+                        email=user_email, company=company).first()
+                    db.session.delete(user)
+                    db.session.commit()
+                else:
+                    pass
 
-    return render_template("admin.html", company=company)
+                
+
+            return render_template("admin.html", company=company)
+
+    except KeyError:
+        return redirect(url_for("login"))
+    
+    return 0
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/dashboard", methods=["POST", "GET"])
