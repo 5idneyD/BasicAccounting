@@ -12,7 +12,7 @@ Features I am planning on adding:
     - Add Invoices
     - View Customers
 - General Ledger
-    - Chart Of Accounts [x]
+    - Chart Of Accounts - [x]
     - Trial Balance
     - Balance Sheet
     - P&L
