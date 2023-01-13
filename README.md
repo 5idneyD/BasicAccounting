@@ -12,12 +12,16 @@ Features I am planning on adding:
     - Add Invoices
     - View Customers
 - General Ledger
-    - Chart Of Accounts
+    - Chart Of Accounts ✔️
     - Trial Balance
     - Balance Sheet
     - P&L
 - Double Entry Journals
 - Periods
+- Admin Page ✔️
+    - Add Users ✔️
+    - Remove Users ✔️
+    - Add Nominal Accounts ✔️
 
 Tech Stack Being Used:
 - SQLAlchemy (Sqlite3)
