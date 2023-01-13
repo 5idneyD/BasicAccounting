@@ -18,6 +18,10 @@ Features I am planning on adding:
     - P&L
 - Double Entry Journals
 - Periods
+- Admin Page ✔️
+    - Add Users ✔️
+    - Remove Users ✔️
+    - Add Nominal Accounts ✔️
 
 Tech Stack Being Used:
 - SQLAlchemy (Sqlite3)
