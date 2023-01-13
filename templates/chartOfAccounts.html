@@ -33,7 +33,11 @@
 						</li>
 					</ul>
 				</div>
-				<div id="data" class="col-9"></div>
+				<div id="data" class="col-9">
+					{% for account in accounts %}
+					<h1>{{account.account_name}}: {{account.nominal}}</h1>
+					{% endfor %}
+				</div>
 			</div>
 		</div>
 

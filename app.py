@@ -173,7 +173,11 @@ def dashboard(company, email, username, session_key):
 def chartOfAccounts(company, email, username, session_key):
     try:
         if session[email] == session_key:
-            return render_template("chartOfACcounts.html", company=company, email=email, username=username, session_sey=session_key)
+
+            accounts = ChartOfAccounts.query.filter_by(company=company).all()
+
+
+            return render_template("chartOfACcounts.html", company=company, email=email, username=username, session_sey=session_key, accounts=accounts)
         else:
             return redirect(url_for("login"))
     except KeyError:
