@@ -34,9 +34,18 @@
 					</ul>
 				</div>
 				<div id="data" class="col-9">
-					{% for account in accounts %}
-					<h1>{{account.account_name}}: {{account.nominal}}</h1>
-					{% endfor %}
+					<table>
+						<tr>
+							<th>Nominal Code</th>
+							<th>Account Name</th>
+						</tr>
+						{% for account in accounts %}
+						<tr>
+							<td>{{account.nominal}}</td>
+							<td>{{account.account_name}}</td>
+						</tr>
+						{% endfor %}
+					</table>
 				</div>
 			</div>
 		</div>

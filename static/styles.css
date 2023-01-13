@@ -1,6 +1,6 @@
 :root {
     --dark: #151f1e;
-    --light: #ede599;
+    --light: #e7e48af6;
 }
 
 #heading {
@@ -107,3 +107,13 @@ a[data-expanded="false"] {
     font-size: large;
 }
 
+table{
+border-collapse: collapse;
+width: 80%;
+margin: auto;
+margin-top: 2%;
+
+}
+tr {
+    border: 1px solid grey;
+}
