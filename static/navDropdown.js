@@ -33,7 +33,7 @@ document.addEventListener(
                     e.target.id +
                     "Option><a class='menuOption " +
                     e.target.id +
-                    "Option'>View Suppliers</a>",
+                    "Option' href='" + url + "/Suppliers'>View Suppliers</a>",
                 );
                 menu.dataset.expanded = "true";
             } else {

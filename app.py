@@ -55,6 +55,11 @@ class Customers(db.Model):
     customer_name = db.Column(db.String(40))
     customer_code = db.Column(db.String(6))
 
+class Suppliers(db.Model):
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    company = db.Column(db.String(40))
+    supplier_name = db.Column(db.String(40))
+    supplier_code = db.Column(db.String(6))
 
 with app.app_context():
     db.create_all()
@@ -207,8 +212,28 @@ def addCustomer(company, email, username, session_key):
         db.session.add(customer)
         db.session.commit()
 
-
     return render_template("addCustomer.html", company=company, email=email, username=username, session_key=session_key)
+
+@app.route("/<company>/<email>/<username>/<session_key>/Suppliers", methods=["POST", "GET"])
+def suppliers(company, email, username, session_key):
+
+    suppliers = Suppliers.query.filter_by(company=company).all()
+    return render_template("suppliers.html", company=company, email=email, username=username, session_key=session_key, suppliers=suppliers)
+
+@app.route("/<company>/<email>/<username>/<session_key>/addSupplier", methods=["POST", "GET"])
+def addSupplier(company, email, username, session_key):
+
+    if request.method == "POST":
+        supplier_name = request.form['supplier_name']
+        supplier_code = request.form['supplier_code']
+        supplier = Suppliers(company=company, supplier_name=supplier_name, supplier_code=supplier_code)
+        db.session.add(supplier)
+        db.session.commit()
+
+    return render_template("addSupplier.html", company=company, email=email, username=username, session_key=session_key)
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
