@@ -5,7 +5,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
 import datetime as dt
-
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -258,11 +258,35 @@ def addSupplier(company, email, username, session_key):
 
     return render_template("addSupplier.html", company=company, email=email, username=username, session_key=session_key)
 
+
 @app.route("/<company>/<email>/<username>/<session_key>/addSalesInvoice", methods=["POST", "GET"])
 def addSalesInvoice(company, email, username, session_key):
+
+    if request.method == "POST":
+        invoice_number = request.form['invoice_number']
+        invoice_date = request.form['invoice_date']
+        customer_code = request.form['customer_code']
+        number_of_rows = request.form['number_of_rows']
+
+        for i in range(1, int(number_of_rows)+1):
+            row = str(i)
+            nominal_code = request.form[row+"_nominal_code"]
+            description = request.form[row+"_description"]
+            net_value = request.form[row+"_net_value"]
+            vat = request.form[row+"_vat"]
+            total_value = request.form[row+"_total_value"]
+            new_invoice = SalesInvoices(company=company, customer_code=customer_code,
+                                        invoice_number=invoice_number, invoice_date=invoice_date,
+                                        nominal_code=nominal_code, description=description,
+                                        net_value=net_value, vat_value=vat, total_value=total_value,
+                                        date_posted=dt.datetime.today, user_posted=username)
+            
+            db.session.add(new_invoice)
+        
+        db.session.commit()
+        return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key)
     customers = Customers.query.filter_by(company=company).all()
     return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers)
-
 
 
 if __name__ == "__main__":

@@ -57,6 +57,9 @@ select.invoice {
     width: 80%;
     text-align: center;
 }
+input#number_of_rows{
+    display: none;
+}
 .container,
 .container-fluid {
     text-align: center;
@@ -132,9 +135,9 @@ td {
     padding: 1%;
 }
 
-td.invoiceHeader {
+th.invoiceHeader {
     width: 14%;
 }
-td.invoiceHeaderDescription {
+th.invoiceHeaderDescription {
     width: 44%;
 }

@@ -34,23 +34,23 @@
 					</ul>
 				</div>
 				<div id="data" class="col-9">
-					<form>
+					<form method="post">
 						<div class="container">
 							<div class="col-5">
 								<table id="headTable">
 									<tr>
 										<td>Invoice Number</td>
-										<td><input type="invoice" placeholder="Enter Invoice No." /></td>
+										<td><input type="invoice" name="invoice_number" placeholder="Enter Invoice No." /></td>
 									</tr>
 									<tr>
 										<td>Invoice Date</td>
-										<td><input type="date" placeholder="Select Date" /></td>
+										<td><input type="date" name="invoice_date" placeholder="Select Date" /></td>
 									</tr>
 									<tr>
 										<td>Customer Code</td>
 										<td>
-											<select class="invoice">
-												<option>Select</option>
+											<select class="invoice" name="customer_code" title="">
+												<option selected hidden>Select</option>
 												{% for customer in customers %}
 												<option>{{customer.customer_code}}</option>
 												{% endfor %}
@@ -71,20 +71,23 @@
 							</div>
 							<div class="col">
 								<div class="container">
-									<table id="bodyTable">
+									<table name="data" data-rows=1 id="bodyTable">
+                                        <input id="number_of_rows" name="number_of_rows" value=data-rows>
 										<tr>
+                                            <th>Row</th>
 											<th class="invoiceHeader">Nominal Code</th>
 											<th class="invoiceHeaderDescription">Description</th>
 											<th class="invoiceHeader">Net Value</th>
 											<th class="invoiceHeader">VAT</th>
 											<th class="invoiceHeader">Total Value</th>
 										</tr>
-										<tr>
-											<td><input type="text" /></td>
-											<td><input type="text" /></td>
-											<td><input type="text" /></td>
-											<td><input type="text" /></td>
-											<td><input type="text" /></td>
+										<tr class="invoiceRow">
+                                            <td>1</td>
+											<td><input type="text" name="1_nominal_code"/></td>
+											<td><input type="text" name="1_description"/></td>
+											<td><input type="text" name="1_net_value"/></td>
+											<td><input type="text" name="1_vat"/></td>
+											<td><input type="text" name="1_total_value"/></td>
 										</tr>
 									</table>
 
