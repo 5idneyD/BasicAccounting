@@ -10,7 +10,7 @@ Features I am planning on adding:
     - View Suppliers ✔️
     - Add Suppliers ✔️
 - Sales Ledger
-    - Add Invoices
+    - Add Invoices ✔️
     - View Customers ✔️
     - Add Customers ✔️
 - General Ledger
