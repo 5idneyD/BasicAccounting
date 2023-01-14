@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session, g
 from flask_migrate import Migrate
+# from passlib.hash import pbkdf2_sha256 as sha256
 import os
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
+import datetime as dt
+
 
 app = Flask(__name__)
 
@@ -23,6 +26,7 @@ app.secret_key = os.urandom(12).hex()
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
 
 class Companies(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
@@ -49,11 +53,13 @@ class ChartOfAccounts(db.Model):
     nominal = db.Column(db.Integer, nullable=False)
     account_name = db.Column(db.String(40))
 
+
 class Customers(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     company = db.Column(db.String(40))
     customer_name = db.Column(db.String(40))
     customer_code = db.Column(db.String(6))
+
 
 class Suppliers(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
@@ -61,12 +67,30 @@ class Suppliers(db.Model):
     supplier_name = db.Column(db.String(40))
     supplier_code = db.Column(db.String(6))
 
+
+class SalesInvoices(db.Model):
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    company = db.Column(db.String(40))
+    customer_code = db.Column(db.String(40))
+    invoice_number = db.Column(db.Integer, nullable=False)
+    invoice_date = db.Column(db.DateTime)
+    nominal_code = db.Column(db.Integer)
+    description = db.Column(db.String(40), nullable=False)
+    net_value = db.Column(db.Float)
+    vat_value = db.Column(db.Float)
+    total_value = db.Column(db.Float)
+    date_posted = db.Column(db.DateTime, default=dt.datetime.now())
+    user_posted = db.Column(db.String(40))
+
+
 with app.app_context():
     db.create_all()
 
+
 @app.errorhandler(Exception)
 def not_found(e):
-    return render_template("404.html", error=e)
+    return render_template("error.html", error=e)
+
 
 @app.before_request
 def before_request():
@@ -155,13 +179,11 @@ def admin(company, email, session_key):
                 else:
                     pass
 
-                
-
             return render_template("admin.html", company=company)
 
     except KeyError:
         return redirect(url_for("login"))
-    
+
     return 0
 
 
@@ -186,7 +208,6 @@ def chartOfAccounts(company, email, username, session_key):
 
             accounts = ChartOfAccounts.query.filter_by(company=company).all()
 
-
             return render_template("chartOfACcounts.html", company=company, email=email, username=username, session_sey=session_key, accounts=accounts)
         else:
             return redirect(url_for("login"))
@@ -202,17 +223,20 @@ def customers(company, email, username, session_key):
     customers = Customers.query.filter_by(company=company).all()
     return render_template("customers.html", company=company, email=email, username=username, session_key=session_key, customers=customers)
 
+
 @app.route("/<company>/<email>/<username>/<session_key>/addCustomer", methods=["POST", "GET"])
 def addCustomer(company, email, username, session_key):
 
     if request.method == "POST":
         customer_name = request.form['customer_name']
         customer_code = request.form['customer_code']
-        customer = Customers(company=company, customer_name=customer_name, customer_code=customer_code)
+        customer = Customers(
+            company=company, customer_name=customer_name, customer_code=customer_code)
         db.session.add(customer)
         db.session.commit()
 
     return render_template("addCustomer.html", company=company, email=email, username=username, session_key=session_key)
+
 
 @app.route("/<company>/<email>/<username>/<session_key>/Suppliers", methods=["POST", "GET"])
 def suppliers(company, email, username, session_key):
@@ -220,18 +244,24 @@ def suppliers(company, email, username, session_key):
     suppliers = Suppliers.query.filter_by(company=company).all()
     return render_template("suppliers.html", company=company, email=email, username=username, session_key=session_key, suppliers=suppliers)
 
+
 @app.route("/<company>/<email>/<username>/<session_key>/addSupplier", methods=["POST", "GET"])
 def addSupplier(company, email, username, session_key):
 
     if request.method == "POST":
         supplier_name = request.form['supplier_name']
         supplier_code = request.form['supplier_code']
-        supplier = Suppliers(company=company, supplier_name=supplier_name, supplier_code=supplier_code)
+        supplier = Suppliers(
+            company=company, supplier_name=supplier_name, supplier_code=supplier_code)
         db.session.add(supplier)
         db.session.commit()
 
     return render_template("addSupplier.html", company=company, email=email, username=username, session_key=session_key)
 
+@app.route("/<company>/<email>/<username>/<session_key>/addSalesInvoice", methods=["POST", "GET"])
+def addSalesInvoice(company, email, username, session_key):
+    customers = Customers.query.filter_by(company=company).all()
+    return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers)
 
 
 

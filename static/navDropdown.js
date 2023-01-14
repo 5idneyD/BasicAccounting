@@ -15,7 +15,7 @@ document.addEventListener(
                     e.target.id +
                     "Option><a class='menuOption " +
                     e.target.id +
-                    "Option'>Add Sales Invoice</a><br class=" +
+                    "Option' href='" + url + "/addSalesInvoice'>Add Sales Invoice</a><br class=" +
                     e.target.id +
                     "Option><a class='menuOption " +
                     e.target.id +
