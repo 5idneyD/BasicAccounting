@@ -52,6 +52,9 @@ class ChartOfAccounts(db.Model):
 with app.app_context():
     db.create_all()
 
+@app.errorhandler(Exception)
+def not_found(e):
+    return render_template("404.html", error=e)
 
 @app.before_request
 def before_request():
