@@ -52,6 +52,7 @@ class ChartOfAccounts(db.Model):
     company = db.Column(db.String(40))
     nominal = db.Column(db.Integer, nullable=False)
     account_name = db.Column(db.String(40))
+    balance = db.Column(db.Float, default=0.00)
 
 
 class Customers(db.Model):
@@ -73,13 +74,13 @@ class SalesInvoices(db.Model):
     company = db.Column(db.String(40))
     customer_code = db.Column(db.String(40))
     invoice_number = db.Column(db.Integer, nullable=False)
-    invoice_date = db.Column(db.DateTime)
+    invoice_date = db.Column(db.String(40))
     nominal_code = db.Column(db.Integer)
     description = db.Column(db.String(40), nullable=False)
     net_value = db.Column(db.Float)
     vat_value = db.Column(db.Float)
     total_value = db.Column(db.Float)
-    date_posted = db.Column(db.DateTime, default=dt.datetime.now())
+    date_posted = db.Column(db.String(40))
     user_posted = db.Column(db.String(40))
 
 
@@ -261,6 +262,7 @@ def addSupplier(company, email, username, session_key):
 
 @app.route("/<company>/<email>/<username>/<session_key>/addSalesInvoice", methods=["POST", "GET"])
 def addSalesInvoice(company, email, username, session_key):
+    customers = Customers.query.filter_by(company=company).all()
 
     if request.method == "POST":
         invoice_number = request.form['invoice_number']
@@ -275,18 +277,28 @@ def addSalesInvoice(company, email, username, session_key):
             net_value = request.form[row+"_net_value"]
             vat = request.form[row+"_vat"]
             total_value = request.form[row+"_total_value"]
+
             new_invoice = SalesInvoices(company=company, customer_code=customer_code,
                                         invoice_number=invoice_number, invoice_date=invoice_date,
                                         nominal_code=nominal_code, description=description,
                                         net_value=net_value, vat_value=vat, total_value=total_value,
-                                        date_posted=dt.datetime.today, user_posted=username)
-            
+                                        date_posted=dt.datetime.today().strftime("%Y-%m-%d"), user_posted=username)
             db.session.add(new_invoice)
-        
+
+            account = ChartOfAccounts.query.filter_by(company=company, nominal=nominal_code).first()
+            account.balance =- float(net_value)
         db.session.commit()
-        return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key)
-    customers = Customers.query.filter_by(company=company).all()
+
+        return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers)
     return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers)
+
+
+@app.route("/<company>/<email>/<username>/<session_key>/trialBalance", methods=["POST", "GET"])
+def trialBalance(company, email, username, session_key):
+
+    accounts = ChartOfAccounts.query.filter_by(company=company).all()
+
+    return render_template("trialBalance.html", accounts=accounts)
 
 
 if __name__ == "__main__":

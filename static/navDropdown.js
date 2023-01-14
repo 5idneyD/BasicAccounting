@@ -43,7 +43,7 @@ document.addEventListener(
                     e.target.id +
                     "Option><a class='menuOption " +
                     e.target.id +
-                    "Option'>Trial Balance</a><br class=" +
+                    "Option' href='" + url + "/trialBalance'>Trial Balance</a><br class=" +
                     e.target.id +
                     "Option><a class='menuOption " +
                     e.target.id +
