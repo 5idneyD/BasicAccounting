@@ -8,9 +8,11 @@ Features I am planning on adding:
 - Purchase Ledger
     - Add Invoices
     - View Suppliers
+    - Add Suppliers
 - Sales Ledger
     - Add Invoices
-    - View Customers
+    - View Customers ✔️
+    - Add Customers ✔️
 - General Ledger
     - Chart Of Accounts ✔️
     - Trial Balance
@@ -31,3 +33,7 @@ Tech Stack Being Used:
 
 - Bootstrap 5
 - Python 3.11
+
+Potential Features In The Future
+- Different permissions for different users
+- Email invoices to customers once posted

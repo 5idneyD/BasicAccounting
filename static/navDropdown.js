@@ -19,7 +19,7 @@ document.addEventListener(
                     e.target.id +
                     "Option><a class='menuOption " +
                     e.target.id +
-                    "Option'>View Customers</a>",
+                    "Option' href='" + url + "/Customers'>View Customers</a>",
                 );
                 menu.dataset.expanded = "true";
             } else if (menu.id == "purchaseLedger") {

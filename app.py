@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, g
+from flask_migrate import Migrate
 import os
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
@@ -21,7 +22,7 @@ app.secret_key = os.urandom(12).hex()
 
 
 db = SQLAlchemy(app)
-
+migrate = Migrate(app, db)
 
 class Companies(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
@@ -47,6 +48,12 @@ class ChartOfAccounts(db.Model):
     company = db.Column(db.String(40))
     nominal = db.Column(db.Integer, nullable=False)
     account_name = db.Column(db.String(40))
+
+class Customers(db.Model):
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    company = db.Column(db.String(40))
+    customer_name = db.Column(db.String(40))
+    customer_code = db.Column(db.String(6))
 
 
 with app.app_context():
@@ -183,6 +190,25 @@ def chartOfAccounts(company, email, username, session_key):
         return redirect(url_for("login"))
     return 0
 
+
+@app.route("/<company>/<email>/<username>/<session_key>/Customers", methods=["POST", "GET"])
+def customers(company, email, username, session_key):
+
+    customers = Customers.query.filter_by(company=company).all()
+    return render_template("customers.html", company=company, email=email, username=username, session_key=session_key, customers=customers)
+
+@app.route("/<company>/<email>/<username>/<session_key>/addCustomer", methods=["POST", "GET"])
+def addCustomer(company, email, username, session_key):
+
+    if request.method == "POST":
+        customer_name = request.form['customer_name']
+        customer_code = request.form['customer_code']
+        customer = Customers(company=company, customer_name=customer_name, customer_code=customer_code)
+        db.session.add(customer)
+        db.session.commit()
+
+
+    return render_template("addCustomer.html", company=company, email=email, username=username, session_key=session_key)
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)

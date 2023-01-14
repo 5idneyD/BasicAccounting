@@ -1,0 +1,6 @@
+Commands to Migrate the databade when changes are made
+
+1. Go to command prompt
+2. flask db init (only the first time)
+3. flask db migrate
+4. flask db upgrade
