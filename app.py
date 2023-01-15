@@ -286,7 +286,7 @@ def addSalesInvoice(company, email, username, session_key):
             db.session.add(new_invoice)
 
             account = ChartOfAccounts.query.filter_by(company=company, nominal=nominal_code).first()
-            account.balance =- float(net_value)
+            account.balance = account.balance-float(net_value)
         db.session.commit()
 
         return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers)
@@ -298,7 +298,7 @@ def trialBalance(company, email, username, session_key):
 
     accounts = ChartOfAccounts.query.filter_by(company=company).all()
 
-    return render_template("trialBalance.html", accounts=accounts)
+    return render_template("trialBalance.html", company=company, accounts=accounts)
 
 
 if __name__ == "__main__":

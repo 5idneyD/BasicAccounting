@@ -131,6 +131,10 @@ tr {
     border: 1px solid grey;
 }
 
+tr.trialBalance td, tr.trialBalance th {
+    border: 1px solid grey;
+}
+
 td {
     padding: 1%;
 }
@@ -141,3 +145,4 @@ th.invoiceHeader {
 th.invoiceHeaderDescription {
     width: 44%;
 }
+

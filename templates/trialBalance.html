@@ -34,10 +34,28 @@
 					</ul>
 				</div>
 				<div id="data" class="col-9">
-                    {% for account in accounts %}
-                        <h4>{{ account.account_name}}: {{ account.balance }}</h4>
-                    {% endfor %}
-                </div>
+					<table>
+						<tr class="trialBalance">
+							<th class="invoiceHeader">Nominal Code</th>
+							<th class="invoiceHeaderDescription">Account Name</th>
+							<th class="invoiceHeader">Debit</th>
+							<th class="invoiceHeader">Credit</th>
+						</tr>
+						{% for account in accounts %}
+						<tr class="trialBalance">
+							<td>{{ account.nominal }}</td>
+							<td>{{ account.account_name }}</td>
+							{% if account.balance > 0.00 %}
+							<td>{{ account.balance }}</td>
+							<td></td>
+							{% else %}
+							<td></td>
+							<td>{{ -account.balance }}</td>
+							{% endif %}
+						</tr>
+						{% endfor %}
+					</table>
+				</div>
 			</div>
 		</div>
 
