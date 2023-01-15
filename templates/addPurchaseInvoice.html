@@ -15,7 +15,7 @@
 	<body>
 		<div id="heading">
 			<h1><u>{{company}}</u></h1>
-			<h2>Add Sales Invoice</h2>
+			<h2>Add Purchase Invoice</h2>
 		</div>
 		<div class="flex-column"></div>
 		<div id="main" class="container-fluid">
@@ -47,12 +47,12 @@
 										<td><input type="date" name="invoice_date" placeholder="Select Date" /></td>
 									</tr>
 									<tr>
-										<td>Customer Code</td>
+										<td>Supplier Code</td>
 										<td>
-											<select class="invoice" name="customer_code" title="">
+											<select class="invoice" name="supplier_code" title="">
 												<option selected hidden>Select</option>
-												{% for customer in customers %}
-												<option>{{customer.customer_code}}</option>
+												{% for supplier in suppliers %}
+												<option>{{supplier.supplier_code}}</option>
 												{% endfor %}
 											</select>
 										</td>

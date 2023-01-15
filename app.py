@@ -83,6 +83,20 @@ class SalesInvoices(db.Model):
     date_posted = db.Column(db.String(40))
     user_posted = db.Column(db.String(40))
 
+class PurchaseInvoices(db.Model):
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    company = db.Column(db.String(40))
+    supplier_code = db.Column(db.String(40))
+    invoice_number = db.Column(db.Integer, nullable=False)
+    invoice_date = db.Column(db.String(40))
+    nominal_code = db.Column(db.Integer)
+    description = db.Column(db.String(40), nullable=False)
+    net_value = db.Column(db.Float)
+    vat_value = db.Column(db.Float)
+    total_value = db.Column(db.Float)
+    date_posted = db.Column(db.String(40))
+    user_posted = db.Column(db.String(40))
+
 
 with app.app_context():
     db.create_all()
@@ -291,6 +305,40 @@ def addSalesInvoice(company, email, username, session_key):
 
         return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers)
     return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers)
+
+
+@app.route("/<company>/<email>/<username>/<session_key>/addPurchaseInvoice", methods=["POST", "GET"])
+def addPurchaseInvoice(company, email, username, session_key):
+    suppliers = Suppliers.query.filter_by(company=company).all()
+
+    if request.method == "POST":
+        invoice_number = request.form['invoice_number']
+        invoice_date = request.form['invoice_date']
+        supplier_code = request.form['supplier_code']
+        number_of_rows = request.form['number_of_rows']
+
+        for i in range(1, int(number_of_rows)+1):
+            row = str(i)
+            nominal_code = request.form[row+"_nominal_code"]
+            description = request.form[row+"_description"]
+            net_value = request.form[row+"_net_value"]
+            vat = request.form[row+"_vat"]
+            total_value = request.form[row+"_total_value"]
+
+            new_invoice = PurchaseInvoices(company=company, supplier_code=supplier_code,
+                                        invoice_number=invoice_number, invoice_date=invoice_date,
+                                        nominal_code=nominal_code, description=description,
+                                        net_value=net_value, vat_value=vat, total_value=total_value,
+                                        date_posted=dt.datetime.today().strftime("%Y-%m-%d"), user_posted=username)
+            db.session.add(new_invoice)
+
+            account = ChartOfAccounts.query.filter_by(company=company, nominal=nominal_code).first()
+            account.balance = account.balance+float(net_value)
+        db.session.commit()
+
+    return render_template("addPurchaseInvoice.html", company=company, email=email, username=username, session_key=session_key, suppliers=suppliers)
+
+
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/trialBalance", methods=["POST", "GET"])

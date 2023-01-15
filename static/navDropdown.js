@@ -29,7 +29,7 @@ document.addEventListener(
                     e.target.id +
                     "Option><a class='menuOption " +
                     e.target.id +
-                    "Option'>Add Purchase Invoice</a><br class=" +
+                    "Option' href='" + url + "/addPurchaseInvoice'>Add Purchase Invoice</a><br class=" +
                     e.target.id +
                     "Option><a class='menuOption " +
                     e.target.id +
