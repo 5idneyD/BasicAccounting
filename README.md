@@ -26,7 +26,7 @@ Features I am planning on adding:
     - Add Nominal Accounts ✔️
 
 Tech Stack Being Used:
-- SQLAlchemy (Sqlite3)
+- SQLAlchemy  <strike>(SQLite3)</strike>   (MySQL) 
 - Flask
 
 -  <strike>Vue.Js</strike>   Vanilla.Js
