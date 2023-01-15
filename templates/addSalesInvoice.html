@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-		<meta id="references" data-references="{{references}}" data-company="{{company}}">
+		<meta id="references" data-references="{{references}}" data-company="{{company}}" />
 		<link
 			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
 			rel="stylesheet"
@@ -41,7 +41,13 @@
 								<table id="headTable">
 									<tr>
 										<td>Invoice Number</td>
-										<td><input type="invoice" id="invoice_number" name="invoice_number" placeholder="Enter Invoice No." /></td>
+										<td>
+											<input
+												type="invoice"
+												id="invoice_number"
+												name="invoice_number"
+												placeholder="Enter Invoice No." />
+										</td>
 									</tr>
 									<tr>
 										<td>Invoice Date</td>
@@ -61,21 +67,21 @@
 									<tr>
 										<td>VAT By Default</td>
 										<td>
-											<select class="invoice">
-												<option>Yes</option>
-												<option>No</option>
+											<select class="invoice" id="vatSetting">
+												<option value="yes">Yes</option>
+												<option values="no">No</option>
 											</select>
 										</td>
 									</tr>
 								</table>
-								<button type="button" onclick="addInvoiceRow()">Add Row</button>
+								<button type="button" onclick="addInvoiceRow(); calculate()">Add Row</button>
 							</div>
 							<div class="col">
 								<div class="container">
-									<table name="data" data-rows=1 id="bodyTable">
-                                        <input id="number_of_rows" name="number_of_rows" value=data-rows>
+									<table name="data" data-rows="1" id="bodyTable">
+										<input id="number_of_rows" name="number_of_rows" value="data-rows" />
 										<tr>
-                                            <th>Row</th>
+											<th>Row</th>
 											<th class="invoiceHeader">Nominal Code</th>
 											<th class="invoiceHeaderDescription">Description</th>
 											<th class="invoiceHeader">Net Value</th>
@@ -83,15 +89,14 @@
 											<th class="invoiceHeader">Total Value</th>
 										</tr>
 										<tr class="invoiceRow">
-                                            <td>1</td>
-											<td><input type="text" name="1_nominal_code"/></td>
-											<td><input type="text" name="1_description"/></td>
-											<td><input type="text" name="1_net_value"/></td>
-											<td><input type="text" name="1_vat"/></td>
-											<td><input type="text" name="1_total_value"/></td>
+											<td>1</td>
+											<td><input type="text" name="1_nominal_code" /></td>
+											<td><input type="text" name="1_description" /></td>
+											<td><input type="text" name="1_net_value" class="net"/></td>
+											<td><input type="text" name="1_vat" class="vat"/></td>
+											<td><input type="text" name="1_total_value" class="tv"/></td>
 										</tr>
 									</table>
-
 									<button id="submitButton" type="submit">Submit</button>
 								</div>
 							</div>
@@ -103,27 +108,7 @@
 
 		<script src="{{ url_for('static', filename='navDropdown.js') }}"></script>
 		<script src="{{ url_for('static', filename='addInvoiceRow.js') }}"></script>
-		<script>
-			var references = document.querySelector("#references").dataset.references;
-			var company = document.querySelector("#references").dataset.company;
-			var invoice_number_element = document.querySelector("#invoice_number");
-			var submitButton = document.querySelector("#submitButton");
-
-			var new_number = Number(references[references.length-3]) + 1;
-			invoice_number_element.value = new_number;
-
-			invoice_number_element.addEventListener("change", function(){
-				var new_reference = company + invoice_number_element.value;
-				if (references.includes(new_reference)){
-					invoice_number_element.style.border = "1px solid red";
-					submitButton.setAttribute("disabled", "disabled")
-					console.log("Used");
-				} else {
-					console.log("Unused");
-					invoice_number_element.style.border = "1px solid gray";
-					submitButton.removeAttribute("disabled")
-				}
-			});
-		</script>
+		<script src="{{url_for('static', filename='defaultSalesInvoiceNumber.js')}}"></script>
+		<script src="{{url_for('static', filename='totalValue.js')}}"></script>
 	</body>
 </html>
