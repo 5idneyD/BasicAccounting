@@ -37,3 +37,4 @@ Tech Stack Being Used:
 Potential Features In The Future
 - Different permissions for different users
 - Email invoices to customers once posted
+- Budget
