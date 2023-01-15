@@ -7,7 +7,7 @@ document.addEventListener(
 
 
         if (menu.dataset.expanded == "false") {
-            menu.parentElement.style.height = "14vh";
+            menu.parentElement.style.height = "18vh";
             if (menu.id == "salesLedger") {
                 menu.insertAdjacentHTML(
                     "beforeend",
@@ -16,6 +16,10 @@ document.addEventListener(
                     "Option><a class='menuOption " +
                     e.target.id +
                     "Option' href='" + url + "/addSalesInvoice'>Add Sales Invoice</a><br class=" +
+                    e.target.id +
+                    "Option><a class='menuOption " +
+                    e.target.id +
+                    "Option' href='" + url + "/viewSalesInvoices'>View Sales Invoices</a><br class=" +
                     e.target.id +
                     "Option><a class='menuOption " +
                     e.target.id +
@@ -33,6 +37,10 @@ document.addEventListener(
                     e.target.id +
                     "Option><a class='menuOption " +
                     e.target.id +
+                    "Option' href='" + url + "/viewPurchaseInvoices'>View Purchase Invoices</a><br class=" +
+                    e.target.id +
+                    "Option><a class='menuOption " +
+                    e.target.id +      
                     "Option' href='" + url + "/Suppliers'>View Suppliers</a>",
                 );
                 menu.dataset.expanded = "true";
