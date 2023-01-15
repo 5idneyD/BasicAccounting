@@ -6,7 +6,7 @@ I hope for it to become a professionally used application that anyone can access
 
 Features I am planning on adding:
 - Purchase Ledger
-    - Add Invoices
+    - Add Invoices ✔️
     - View Suppliers ✔️
     - Add Suppliers ✔️
 - Sales Ledger
@@ -15,7 +15,7 @@ Features I am planning on adding:
     - Add Customers ✔️
 - General Ledger
     - Chart Of Accounts ✔️
-    - Trial Balance
+    - Trial Balance ✔️
     - Balance Sheet
     - P&L
 - Double Entry Journals
