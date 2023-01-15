@@ -4,6 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+		<meta id="references" data-references="{{references}}" data-company="{{company}}">
 		<link
 			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
 			rel="stylesheet"
@@ -40,7 +41,7 @@
 								<table id="headTable">
 									<tr>
 										<td>Invoice Number</td>
-										<td><input type="invoice" name="invoice_number" placeholder="Enter Invoice No." /></td>
+										<td><input type="invoice" id="invoice_number" name="invoice_number" placeholder="Enter Invoice No." /></td>
 									</tr>
 									<tr>
 										<td>Invoice Date</td>
@@ -91,7 +92,7 @@
 										</tr>
 									</table>
 
-									<button type="submit">Submit</button>
+									<button id="submitButton" type="submit">Submit</button>
 								</div>
 							</div>
 						</div>
@@ -100,9 +101,29 @@
 			</div>
 		</div>
 
-		<script src="{{ url_for('static', filename='index.js') }}"></script>
 		<script src="{{ url_for('static', filename='navDropdown.js') }}"></script>
 		<script src="{{ url_for('static', filename='addInvoiceRow.js') }}"></script>
-		<script></script>
+		<script>
+			var references = document.querySelector("#references").dataset.references;
+			var company = document.querySelector("#references").dataset.company;
+			var invoice_number_element = document.querySelector("#invoice_number");
+			var submitButton = document.querySelector("#submitButton");
+
+			var new_number = Number(references[references.length-3]) + 1;
+			invoice_number_element.value = new_number;
+
+			invoice_number_element.addEventListener("change", function(){
+				var new_reference = company + invoice_number_element.value;
+				if (references.includes(new_reference)){
+					invoice_number_element.style.border = "1px solid red";
+					submitButton.setAttribute("disabled", "disabled")
+					console.log("Used");
+				} else {
+					console.log("Unused");
+					invoice_number_element.style.border = "1px solid gray";
+					submitButton.removeAttribute("disabled")
+				}
+			});
+		</script>
 	</body>
 </html>

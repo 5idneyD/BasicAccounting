@@ -146,3 +146,7 @@ th.invoiceHeaderDescription {
     width: 44%;
 }
 
+button:disabled, button:disabled:hover {
+    color: black;
+    background-color: grey;
+}
