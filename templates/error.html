@@ -9,7 +9,7 @@
 			rel="stylesheet"
 			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 			crossorigin="anonymous" />
-		<link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}" />
+		<link rel="stylesheet" href="{{url_for('static', filename='styles/styles.css')}}" />
 		<title>Simple Accounting</title>
 	</head>
 	<body>
@@ -30,13 +30,5 @@
 				<a href="{{ url_for('index') }}"><h4>Return To Our Home Page</h4></a>
 			</div>
 		</div>
-
-		<!-- <div>
-    <h1>{{message}}</h1>
-    <h1 id="vm">[[greeting]]</h1>
-    </div> -->
-
-		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-		<script src="{{ url_for('static', filename='index.js') }}"></script>
 	</body>
 </html>

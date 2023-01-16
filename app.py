@@ -368,5 +368,10 @@ def viewPurchaseInvoices(company, email, username, session_key):
 
     return render_template("viewPurchaseInvoices.html", company=company, invoices=invoices)
 
+@app.route("/<company>/<email>/<username>/<session_key>/journal", methods=["POST", "GET"])
+def journal(company, email, username, session_key):
+    return render_template("journal.html", company=company)
+
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)

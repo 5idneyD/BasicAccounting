@@ -55,7 +55,11 @@ document.addEventListener(
                     e.target.id +
                     "Option><a class='menuOption " +
                     e.target.id +
-                    "Option' href='" + url + "/chartOfAccounts'>Chart Of Accounts</a>",
+                    "Option' href='" + url + "/chartOfAccounts'>Chart Of Accounts</a><br class=" +
+                    e.target.id +
+                    "Option><a class='menuOption " +
+                    e.target.id +
+                    "Option' href='" + url + "/journal'>Post A Journal</a>",
                 );
                 menu.dataset.expanded = "true";
             }

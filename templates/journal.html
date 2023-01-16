@@ -10,12 +10,15 @@
 			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 			crossorigin="anonymous" />
 		<link rel="stylesheet" href="{{url_for('static', filename='styles/styles.css')}}" />
+        <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+		<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 		<title>Simple Accounting</title>
 	</head>
 	<body>
 		<div id="heading">
 			<h1><u>{{company}}</u></h1>
-			<h2>Add Customer</h2>
+			<h2>New Journal</h2>
 		</div>
 		<div class="flex-column"></div>
 		<div id="main" class="container-fluid">
@@ -33,27 +36,10 @@
 						</li>
 					</ul>
 				</div>
-				<div id="data" class="col-9">
-					<form id="form" method="post">
-						<div class="row">
-							<div class="col">
-								<input type="name" name="customer_name" placeholder="Customer Name" aria-required="true" />
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<input type="name" name="customer_code" placeholder="Customer Code" minlength="6" maxlength="6" aria-required="true" />
-							</div>
-						</div>
-						<div class="row">
-							<div class="col mt-5">
-								<button type="submit" name="addCustomerButton">Add Customer</button>
-							</div>
-						</div>
-					</form>
-				</div>
+				<div id="data" class="col-9"></div>
 			</div>
 		</div>
 		<script src="{{ url_for('static', filename='js/navDropdown.js') }}"></script>
+		<script type="text/babel" src="{{ url_for('static', filename='react/journal.jsx') }}"></script>
 	</body>
 </html>
