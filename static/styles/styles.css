@@ -131,7 +131,8 @@ tr {
     border: 1px solid grey;
 }
 
-tr.trialBalance td, tr.trialBalance th {
+tr.trialBalance td, tr.trialBalance th,
+table#journalTable td {
     border: 1px solid grey;
 }
 
