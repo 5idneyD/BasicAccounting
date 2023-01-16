@@ -1,6 +1,7 @@
 :root {
     --dark: #151f1e;
     --light: #e7e48af6;
+    --tableBorder: gray;
 }
 
 #heading {
@@ -41,6 +42,7 @@ input[type="password"],
 input[type="email"],
 input[type="name"],
 input[type="invoice"],
+input[type="journal"],
 input[type="date"],
 select.invoice,
 input::placeholder,
@@ -50,10 +52,11 @@ input:focus {
     border-color: var(--dark);
 }
 input[type="invoice"],
+input[type="journal"],
 input[type="date"],
 select.invoice {
     margin: auto;
-    border: 1px solid grey;
+    border: 1px solid var(--tableBorder);
     width: 80%;
     text-align: center;
 }
@@ -124,16 +127,16 @@ table#bodyTable tr td input {
     margin: auto;
     width: 100%;
     background: var(--light);
-    border: 1px solid gray;
+    border: 1px solid var(--tableBorder);
 }
 
 tr {
-    border: 1px solid grey;
+    border: 1px solid var(--tableBorder);
 }
 
 tr.trialBalance td, tr.trialBalance th,
 table#journalTable td {
-    border: 1px solid grey;
+    border: 1px solid var(--tableBorder);
 }
 
 td {
@@ -149,5 +152,5 @@ th.invoiceHeaderDescription {
 
 button:disabled, button:disabled:hover {
     color: black;
-    background-color: grey;
+    background-color: var(--tableBorder);
 }
