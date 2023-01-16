@@ -11,12 +11,15 @@
 			crossorigin="anonymous" />
 		<link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}" />
 		<title>Simple Accounting</title>
+
+		<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+		<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 	</head>
 	<body>
 		<div id="heading">
 			<h1><u>Simple Accounting</u></h1>
 			<h2>It's Accounting, Made Simple</h2>
-			
 		</div>
 		<div id="main" class="container">
 			<div class="col align-items-center">
@@ -25,13 +28,8 @@
 				<a href="signup"><button name="signinButton">Sign-Up</button></a>
 			</div>
 		</div>
+		<div id="root"></div>
 
-		<!-- <div>
-    <h1>{{message}}</h1>
-    <h1 id="vm">[[greeting]]</h1>
-    </div> -->
-
-		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-		<script src="{{ url_for('static', filename='index.js') }}"></script>
+		<script type="text/babel" src="{{ url_for('static', filename='react_code.jsx') }}"></script>
 	</body>
 </html>

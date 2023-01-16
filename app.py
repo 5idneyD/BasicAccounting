@@ -5,7 +5,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
 import datetime as dt
-import pandas as pd
+
 
 app = Flask(__name__)
 
@@ -346,8 +346,6 @@ def addPurchaseInvoice(company, email, username, session_key):
     return render_template("addPurchaseInvoice.html", company=company, email=email, username=username, session_key=session_key, suppliers=suppliers)
 
 
-
-
 @app.route("/<company>/<email>/<username>/<session_key>/trialBalance", methods=["POST", "GET"])
 def trialBalance(company, email, username, session_key):
 
@@ -369,13 +367,6 @@ def viewPurchaseInvoices(company, email, username, session_key):
     invoices = PurchaseInvoices.query.filter_by(company=company).all()
 
     return render_template("viewPurchaseInvoices.html", company=company, invoices=invoices)
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
