@@ -10,7 +10,7 @@
 			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 			crossorigin="anonymous" />
 		<link rel="stylesheet" href="{{url_for('static', filename='styles/styles.css')}}" />
-        <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
 		<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
 		<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 		<title>Simple Accounting</title>
@@ -36,7 +36,12 @@
 						</li>
 					</ul>
 				</div>
-				<div id="data" class="col-9"></div>
+				<div id="data" class="col-9">
+					<form method="post">
+						<div id="headTable" class="col-6"></div>
+						<div id="mainTable"></div>
+					</form>
+				</div>
 			</div>
 		</div>
 		<script src="{{ url_for('static', filename='js/navDropdown.js') }}"></script>

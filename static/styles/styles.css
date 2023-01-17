@@ -60,7 +60,7 @@ select.invoice {
     width: 80%;
     text-align: center;
 }
-input#number_of_rows{
+input#number_of_rows, input[name='number_of_rows']{
     display: none;
 }
 .container,
@@ -128,6 +128,10 @@ table#bodyTable tr td input {
     width: 100%;
     background: var(--light);
     border: 1px solid var(--tableBorder);
+}
+
+table#journalHead {
+    width: 50%;
 }
 
 tr {
