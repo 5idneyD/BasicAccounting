@@ -387,8 +387,6 @@ def viewPurchaseInvoices(company, email, username, session_key):
 @app.route("/<company>/<email>/<username>/<session_key>/journal", methods=["POST", "GET"])
 def journal(company, email, username, session_key):
 
-    accounts = ChartOfAccounts.query.filter_by(company=company).all()
-
     if request.method == "POST":
         journal_date = str(request.form['journalDate'])
         journal_description = request.form["journalDescription"]
@@ -398,8 +396,19 @@ def journal(company, email, username, session_key):
         for i in range(1, int(number_of_rows)+1):
             nominal_code = request.form[str(i) + "_nominal_code"]
             description = request.form[str(i) + "_description"]
-            debit = float(request.form[str(i) + "_debit"])
-            credit = float(request.form[str(i) + "_credit"])
+            debit = request.form[str(i) + "_debit"]
+            credit = request.form[str(i) + "_credit"]
+
+            if debit == "":
+                debit = 0.00
+            else:
+                debit = float(debit)
+            
+            if credit == "":
+                credit = 0.00
+            else:
+                credit = float(credit)
+            
 
             new_journal = Journals(company=company, journal_date=journal_date,
                                    journal_description=journal_description,
