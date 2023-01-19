@@ -84,6 +84,7 @@ class SalesInvoices(db.Model):
     user_posted = db.Column(db.String(40))
     reference = db.Column(db.String(50))
 
+
 class PurchaseInvoices(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     company = db.Column(db.String(40))
@@ -97,6 +98,17 @@ class PurchaseInvoices(db.Model):
     total_value = db.Column(db.Float)
     date_posted = db.Column(db.String(40))
     user_posted = db.Column(db.String(40))
+
+
+class Journals(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    company = db.Column(db.String(40))
+    journal_date = db.Column(db.String(40))
+    journal_description = db.Column(db.String(40))
+    nominal_code = db.Column(db.Integer)
+    description = db.Column(db.String(40), nullable=False)
+    debit = db.Column(db.Float)
+    credit = db.Column(db.Float)
 
 
 with app.app_context():
@@ -306,7 +318,8 @@ def addSalesInvoice(company, email, username, session_key):
                                         user_posted=username, reference=reference)
             db.session.add(new_invoice)
 
-            account = ChartOfAccounts.query.filter_by(company=company, nominal=nominal_code).first()
+            account = ChartOfAccounts.query.filter_by(
+                company=company, nominal=nominal_code).first()
             account.balance = account.balance-float(net_value)
         db.session.commit()
 
@@ -333,13 +346,14 @@ def addPurchaseInvoice(company, email, username, session_key):
             total_value = request.form[row+"_total_value"]
 
             new_invoice = PurchaseInvoices(company=company, supplier_code=supplier_code,
-                                        invoice_number=invoice_number, invoice_date=invoice_date,
-                                        nominal_code=nominal_code, description=description,
-                                        net_value=net_value, vat_value=vat, total_value=total_value,
-                                        date_posted=dt.datetime.today().strftime("%Y-%m-%d"), user_posted=username)
+                                           invoice_number=invoice_number, invoice_date=invoice_date,
+                                           nominal_code=nominal_code, description=description,
+                                           net_value=net_value, vat_value=vat, total_value=total_value,
+                                           date_posted=dt.datetime.today().strftime("%Y-%m-%d"), user_posted=username)
             db.session.add(new_invoice)
 
-            account = ChartOfAccounts.query.filter_by(company=company, nominal=nominal_code).first()
+            account = ChartOfAccounts.query.filter_by(
+                company=company, nominal=nominal_code).first()
             account.balance = account.balance+float(net_value)
         db.session.commit()
 
@@ -361,6 +375,7 @@ def viewSalesInvoices(company, email, username, session_key):
 
     return render_template("viewSalesInvoices.html", company=company, invoices=invoices)
 
+
 @app.route("/<company>/<email>/<username>/<session_key>/viewPurchaseInvoices", methods=["POST", "GET"])
 def viewPurchaseInvoices(company, email, username, session_key):
 
@@ -368,8 +383,51 @@ def viewPurchaseInvoices(company, email, username, session_key):
 
     return render_template("viewPurchaseInvoices.html", company=company, invoices=invoices)
 
+
 @app.route("/<company>/<email>/<username>/<session_key>/journal", methods=["POST", "GET"])
 def journal(company, email, username, session_key):
+
+    if request.method == "POST":
+        journal_date = str(request.form['journalDate'])
+        journal_description = request.form["journalDescription"]
+        debitTotal = request.form["debitTotal"]
+        creditTotal = request.form["creditTotal"]
+        number_of_rows = request.form["number_of_rows"]
+        print(int(number_of_rows) + 1)
+
+        for i in range(1, int(number_of_rows)+1):
+            nominal_code = request.form[str(i) + "_nominal_code"]
+            description = request.form[str(i) + "_description"]
+            debit = request.form[str(i) + "_debit"]
+            credit = request.form[str(i) + "_credit"]
+
+            if debit == "":
+                debit = 0.00
+            else:
+                debit = float(debit)
+            
+            if credit == "":
+                credit = 0.00
+            else:
+                credit = float(credit)
+
+            print(i, debit, credit)
+
+            new_journal = Journals(company=company, journal_date=journal_date,
+                                   journal_description=journal_description,
+                                   nominal_code=nominal_code, description=description,
+                                   debit=debit, credit=credit)
+            db.session.add(new_journal)
+
+            account = ChartOfAccounts.query.filter_by(company=company, nominal=nominal_code).first()
+            account.balance += debit
+            account.balance -= credit
+
+
+        db.session.commit()
+
+        return render_template("journal.html", company=company)
+
     return render_template("journal.html", company=company)
 
 

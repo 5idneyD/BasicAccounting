@@ -1,6 +1,7 @@
 document.addEventListener(
     "click",
     function (e) {
+        try{
         var menu = document.querySelector("#" + e.target.id);
         var url = window.location.pathname;
         url = url.substring(0, url.lastIndexOf("/"));
@@ -70,6 +71,8 @@ document.addEventListener(
                 menu.dataset.expanded = "false";
                 menu.parentElement.style.height = "8vh";
             });
+        }} catch{
+            
         }
     },
     false,
