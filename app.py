@@ -390,8 +390,10 @@ def journal(company, email, username, session_key):
     if request.method == "POST":
         journal_date = str(request.form['journalDate'])
         journal_description = request.form["journalDescription"]
-        debit = request.form["1_debit"]
+        debitTotal = request.form["debitTotal"]
+        creditTotal = request.form["creditTotal"]
         number_of_rows = request.form["number_of_rows"]
+        print(int(number_of_rows) + 1)
 
         for i in range(1, int(number_of_rows)+1):
             nominal_code = request.form[str(i) + "_nominal_code"]
@@ -408,7 +410,8 @@ def journal(company, email, username, session_key):
                 credit = 0.00
             else:
                 credit = float(credit)
-            
+
+            print(i, debit, credit)
 
             new_journal = Journals(company=company, journal_date=journal_date,
                                    journal_description=journal_description,

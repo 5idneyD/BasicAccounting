@@ -1,87 +1,119 @@
-function HeadTable() {
-	return (
-		<>
-			<table className="col-3" id="journalHead">
-				<tbody>
-					<tr>
-						<td>Date</td>
-						<td>
-							<input type="date" name="journalDate"></input>
-						</td>
-					</tr>
-					<tr>
-						<td>Description</td>
-						<td>
-							<input type="journal" name="journalDescription" />
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<button type="submit">Post Journal</button>
-		</>
-	);
-}
+function Journal() {
+	const [debit, setDebit] = React.useState(0);
+	const [credit, setCredit] = React.useState(0);
+	const [count, setCount] = React.useState(1);
+	const [rows, setRows] = React.useState([<Row key="1" number="1" />]);
 
-ReactDOM.render(<HeadTable />, document.querySelector("#headTable"));
+	function Row(props) {
+		return (
+			<tr>
+				<td>{props.number}</td>
+				<td>
+					<input type="invoice" name={props.number + "_nominal_code"}></input>
+				</td>
+				<td>
+					<input type="invoice" name={props.number + "_description"}></input>
+				</td>
+				<td>
+					<input
+						type="invoice"
+						className="debit"
+						name={props.number + "_debit"}
+						onChange={() => sumDebits()}></input>
+				</td>
+				<td>
+					<input
+						type="invoice"
+						className="credit"
+						name={props.number + "_credit"}
+						onChange={() => sumCredits()}></input>
+				</td>
+			</tr>
+		);
+	}
 
-const Table = (props) => {
-	const rows = [];
+	function addRow() {
+		setCount(count + 1);
+		const a = count + 1;
+		setRows(rows.concat(<Row key={a} number={a} />));
+	}
 
-	for (let i = 1; i <= Number(props.rows); i++) {
-		rows.push(i);
+	function sumDebits() {
+		var debits = document.querySelectorAll(".debit");
+		var debitTotal = 0;
+		debits.forEach((debit) => {
+			debitTotal += Number(debit.value);
+		});
+		setDebit(debitTotal);
+	}
+
+	function sumCredits() {
+		var credits = document.querySelectorAll(".credit");
+		var creditTotal = 0;
+		credits.forEach((credit) => {
+			creditTotal += Number(credit.value);
+		});
+		setCredit(creditTotal);
 	}
 
 	return (
 		<>
-			<input name="number_of_rows" value={props.rows}></input>
-			<table id="journalBody">
-				<thead>
-					<tr>
-						<th>Row</th>
-						<th>Nominal Code</th>
-						<th className="invoiceHeaderDescription">Description</th>
-						<th>Debit</th>
-						<th>Credit</th>
-					</tr>
-				</thead>
-				<tbody>
-					{rows.map((row) => {
-						return (
-							<tr key={row}>
-								<td>{row}</td>
-								<td>
-									<input type="invoice" name={row + "_nominal_code"}></input>
-								</td>
-								<td>
-									<input type="invoice" name={row + "_description"}></input>
-								</td>
-								<td>
-									<input type="invoice" name={row + "_debit"}></input>
-								</td>
-								<td>
-									<input type="invoice" name={row + "_credit"}></input>
-								</td>
-							</tr>
-						);
-					})}
-				</tbody>
-			</table>
-		</>
-	);
-};
+			<div className="col-4">
+				{/* Table Head */}
+				<table className="" id="journalHead">
+					<tbody>
+						<tr>
+							<td>Date</td>
+							<td>
+								<input type="date" name="journalDate"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>Description</td>
+							<td>
+								<input type="journal" name="journalDescription" />
+							</td>
+						</tr>
+						<tr>
+							<td>Debit Total</td>
+							<td>{debit}</td>
+						</tr>
+						<tr>
+							<td>Credit Total</td>
+							<td>{credit}</td>
+						</tr>
+					</tbody>
+				</table>
 
-function Rows() {
-	const [rows, addRow] = React.useState(1);
-
-	return (
-		<>
-			<Table rows={rows} />
-			<button type="button" onClick={() => addRow(rows + 1)}>
-				Add Row
-			</button>
+				{/* buttons */}
+				<button type="button" onClick={() => addRow()}>
+					Add Row
+				</button>
+				<br></br>
+				<button type="submit" id="postButton">
+					Post Journal
+				</button>
+			</div>
+			<div className="col">
+				{/* Table Body */}
+				<table className="col">
+					<thead>
+						<tr>
+							<th>Row</th>
+							<th>Nominal</th>
+							<th>Description</th>
+							<th>Debit</th>
+							<th>Credit</th>
+						</tr>
+					</thead>
+					<tbody id="bodyTable">{rows}</tbody>
+				</table>
+				<input name="number_of_rows" value={count}></input>
+				<input name="debitTotal" value={debit}></input>
+				<input name="creditTotal" value={credit}></input>
+			</div>
 		</>
 	);
 }
 
-const root = document.querySelector("#mainTable");
-ReactDOM.render(<Rows />, root);
+ReactDOM.render(<Journal />, document.querySelector("#headTable"));

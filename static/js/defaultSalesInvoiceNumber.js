@@ -11,9 +11,8 @@ invoice_number_element.addEventListener("change", function () {
     if (references.includes(new_reference)) {
         invoice_number_element.style.border = "1px solid red";
         submitButton.setAttribute("disabled", "disabled")
-        console.log("Used");
     } else {
-        console.log("Unused");
+
         invoice_number_element.style.border = "1px solid gray";
         submitButton.removeAttribute("disabled")
     }
