@@ -18,7 +18,7 @@ Features I am planning on adding:
     - Trial Balance ✔️
     - Balance Sheet
     - P&L
-- Double Entry Journals
+- Double Entry Journals ✔️
 - Periods
 - Admin Page ✔️
     - Add Users ✔️
