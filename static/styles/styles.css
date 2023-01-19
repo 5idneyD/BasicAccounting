@@ -60,7 +60,8 @@ select.invoice {
     width: 80%;
     text-align: center;
 }
-input#number_of_rows, input[name='number_of_rows']{
+input#number_of_rows, input[name='number_of_rows'],
+input[name='debitTotal'], input[name='creditTotal']{
     display: none;
 }
 .container,
