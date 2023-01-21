@@ -109,6 +109,8 @@ class Journals(db.Model):
     description = db.Column(db.String(40), nullable=False)
     debit = db.Column(db.Float)
     credit = db.Column(db.Float)
+    posted_by = db.Column(db.String(40))
+    posted_on = db.Column(db.String(40))
 
 
 with app.app_context():
@@ -468,17 +470,19 @@ def journal(company, email, username, session_key):
                         credit = float(credit)
 
                     print(i, debit, credit)
+                    if debit == 0.00 and credit == 0.00:
+                        pass
+                    else:
+                        new_journal = Journals(company=company, journal_date=journal_date,
+                                            journal_description=journal_description,
+                                            nominal_code=nominal_code, description=description,
+                                            debit=debit, credit=credit, posted_by=username)
+                        db.session.add(new_journal)
 
-                    new_journal = Journals(company=company, journal_date=journal_date,
-                                           journal_description=journal_description,
-                                           nominal_code=nominal_code, description=description,
-                                           debit=debit, credit=credit)
-                    db.session.add(new_journal)
-
-                    account = ChartOfAccounts.query.filter_by(
-                        company=company, nominal=nominal_code).first()
-                    account.balance += debit
-                    account.balance -= credit
+                        account = ChartOfAccounts.query.filter_by(
+                            company=company, nominal=nominal_code).first()
+                        account.balance += debit
+                        account.balance -= credit
 
                 db.session.commit()
 
