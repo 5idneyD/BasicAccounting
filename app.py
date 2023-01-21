@@ -248,187 +248,247 @@ def chartOfAccounts(company, email, username, session_key):
 @app.route("/<company>/<email>/<username>/<session_key>/Customers", methods=["POST", "GET"])
 def customers(company, email, username, session_key):
 
-    customers = Customers.query.filter_by(company=company).all()
-    return render_template("customers.html", company=company, email=email, username=username, session_key=session_key, customers=customers)
+    try:
+        if session[email] == session_key:
+            customers = Customers.query.filter_by(company=company).all()
+            return render_template("customers.html", company=company, email=email, username=username, session_key=session_key, customers=customers)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
+    return 0
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/addCustomer", methods=["POST", "GET"])
 def addCustomer(company, email, username, session_key):
 
-    if request.method == "POST":
-        customer_name = request.form['customer_name']
-        customer_code = request.form['customer_code']
-        customer = Customers(
-            company=company, customer_name=customer_name, customer_code=customer_code)
-        db.session.add(customer)
-        db.session.commit()
+    try:
+        if session[email] == session_key:
 
-    return render_template("addCustomer.html", company=company, email=email, username=username, session_key=session_key)
+            if request.method == "POST":
+                customer_name = request.form['customer_name']
+                customer_code = request.form['customer_code']
+                customer = Customers(
+                    company=company, customer_name=customer_name, customer_code=customer_code)
+                db.session.add(customer)
+                db.session.commit()
+
+            return render_template("addCustomer.html", company=company, email=email, username=username, session_key=session_key)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/Suppliers", methods=["POST", "GET"])
 def suppliers(company, email, username, session_key):
 
-    suppliers = Suppliers.query.filter_by(company=company).all()
-    return render_template("suppliers.html", company=company, email=email, username=username, session_key=session_key, suppliers=suppliers)
+    try:
+        if session[email] == session_key:
+
+            suppliers = Suppliers.query.filter_by(company=company).all()
+            return render_template("suppliers.html", company=company, email=email, username=username, session_key=session_key, suppliers=suppliers)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/addSupplier", methods=["POST", "GET"])
 def addSupplier(company, email, username, session_key):
 
-    if request.method == "POST":
-        supplier_name = request.form['supplier_name']
-        supplier_code = request.form['supplier_code']
-        supplier = Suppliers(
-            company=company, supplier_name=supplier_name, supplier_code=supplier_code)
-        db.session.add(supplier)
-        db.session.commit()
+    try:
+        if session[email] == session_key:
 
-    return render_template("addSupplier.html", company=company, email=email, username=username, session_key=session_key)
+            if request.method == "POST":
+                supplier_name = request.form['supplier_name']
+                supplier_code = request.form['supplier_code']
+                supplier = Suppliers(
+                    company=company, supplier_name=supplier_name, supplier_code=supplier_code)
+                db.session.add(supplier)
+                db.session.commit()
+
+            return render_template("addSupplier.html", company=company, email=email, username=username, session_key=session_key)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/addSalesInvoice", methods=["POST", "GET"])
 def addSalesInvoice(company, email, username, session_key):
-    customers = Customers.query.filter_by(company=company).all()
-    invoices = SalesInvoices.query.filter_by(company=company).all()
-    references = []
-    for invoice in invoices:
-        references.append(str(invoice.reference))
 
-    if request.method == "POST":
-        invoice_number = request.form['invoice_number']
-        invoice_date = request.form['invoice_date']
-        customer_code = request.form['customer_code']
-        number_of_rows = request.form['number_of_rows']
+    try:
+        if session[email] == session_key:
+            customers = Customers.query.filter_by(company=company).all()
+            invoices = SalesInvoices.query.filter_by(company=company).all()
+            references = []
+            for invoice in invoices:
+                references.append(str(invoice.reference))
 
-        for i in range(1, int(number_of_rows)+1):
-            row = str(i)
-            nominal_code = request.form[row+"_nominal_code"]
-            description = request.form[row+"_description"]
-            net_value = request.form[row+"_net_value"]
-            vat = request.form[row+"_vat"]
-            total_value = request.form[row+"_total_value"]
-            reference = company+str(invoice_number)
+            if request.method == "POST":
+                invoice_number = request.form['invoice_number']
+                invoice_date = request.form['invoice_date']
+                customer_code = request.form['customer_code']
+                number_of_rows = request.form['number_of_rows']
 
-            new_invoice = SalesInvoices(company=company, customer_code=customer_code,
-                                        invoice_number=invoice_number, invoice_date=invoice_date,
-                                        nominal_code=nominal_code, description=description,
-                                        net_value=net_value, vat_value=vat, total_value=total_value,
-                                        date_posted=dt.datetime.today().strftime("%Y-%m-%d"),
-                                        user_posted=username, reference=reference)
-            db.session.add(new_invoice)
+                for i in range(1, int(number_of_rows)+1):
+                    row = str(i)
+                    nominal_code = request.form[row+"_nominal_code"]
+                    description = request.form[row+"_description"]
+                    net_value = request.form[row+"_net_value"]
+                    vat = request.form[row+"_vat"]
+                    total_value = request.form[row+"_total_value"]
+                    reference = company+str(invoice_number)
 
-            account = ChartOfAccounts.query.filter_by(
-                company=company, nominal=nominal_code).first()
-            account.balance = account.balance-float(net_value)
-        db.session.commit()
+                    new_invoice = SalesInvoices(company=company, customer_code=customer_code,
+                                                invoice_number=invoice_number, invoice_date=invoice_date,
+                                                nominal_code=nominal_code, description=description,
+                                                net_value=net_value, vat_value=vat, total_value=total_value,
+                                                date_posted=dt.datetime.today().strftime("%Y-%m-%d"),
+                                                user_posted=username, reference=reference)
+                    db.session.add(new_invoice)
 
-        return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers, references=references)
-    return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers, references=references)
+                    account = ChartOfAccounts.query.filter_by(
+                        company=company, nominal=nominal_code).first()
+                    account.balance = account.balance-float(net_value)
+                db.session.commit()
+
+                return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers, references=references)
+            return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers, references=references)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/addPurchaseInvoice", methods=["POST", "GET"])
 def addPurchaseInvoice(company, email, username, session_key):
-    suppliers = Suppliers.query.filter_by(company=company).all()
 
-    if request.method == "POST":
-        invoice_number = request.form['invoice_number']
-        invoice_date = request.form['invoice_date']
-        supplier_code = request.form['supplier_code']
-        number_of_rows = request.form['number_of_rows']
+    try:
+        if session[email] == session_key:
+            suppliers = Suppliers.query.filter_by(company=company).all()
 
-        for i in range(1, int(number_of_rows)+1):
-            row = str(i)
-            nominal_code = request.form[row+"_nominal_code"]
-            description = request.form[row+"_description"]
-            net_value = request.form[row+"_net_value"]
-            vat = request.form[row+"_vat"]
-            total_value = request.form[row+"_total_value"]
+            if request.method == "POST":
+                invoice_number = request.form['invoice_number']
+                invoice_date = request.form['invoice_date']
+                supplier_code = request.form['supplier_code']
+                number_of_rows = request.form['number_of_rows']
 
-            new_invoice = PurchaseInvoices(company=company, supplier_code=supplier_code,
-                                           invoice_number=invoice_number, invoice_date=invoice_date,
-                                           nominal_code=nominal_code, description=description,
-                                           net_value=net_value, vat_value=vat, total_value=total_value,
-                                           date_posted=dt.datetime.today().strftime("%Y-%m-%d"), user_posted=username)
-            db.session.add(new_invoice)
+                for i in range(1, int(number_of_rows)+1):
+                    row = str(i)
+                    nominal_code = request.form[row+"_nominal_code"]
+                    description = request.form[row+"_description"]
+                    net_value = request.form[row+"_net_value"]
+                    vat = request.form[row+"_vat"]
+                    total_value = request.form[row+"_total_value"]
 
-            account = ChartOfAccounts.query.filter_by(
-                company=company, nominal=nominal_code).first()
-            account.balance = account.balance+float(net_value)
-        db.session.commit()
+                    new_invoice = PurchaseInvoices(company=company, supplier_code=supplier_code,
+                                                   invoice_number=invoice_number, invoice_date=invoice_date,
+                                                   nominal_code=nominal_code, description=description,
+                                                   net_value=net_value, vat_value=vat, total_value=total_value,
+                                                   date_posted=dt.datetime.today().strftime("%Y-%m-%d"), user_posted=username)
+                    db.session.add(new_invoice)
 
-    return render_template("addPurchaseInvoice.html", company=company, email=email, username=username, session_key=session_key, suppliers=suppliers)
+                    account = ChartOfAccounts.query.filter_by(
+                        company=company, nominal=nominal_code).first()
+                    account.balance = account.balance+float(net_value)
+                db.session.commit()
+
+            return render_template("addPurchaseInvoice.html", company=company, email=email, username=username, session_key=session_key, suppliers=suppliers)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/trialBalance", methods=["POST", "GET"])
 def trialBalance(company, email, username, session_key):
+    try:
+        if session[email] == session_key:
+            accounts = ChartOfAccounts.query.filter_by(company=company).all()
 
-    accounts = ChartOfAccounts.query.filter_by(company=company).all()
-
-    return render_template("trialBalance.html", company=company, accounts=accounts)
+            return render_template("trialBalance.html", company=company, accounts=accounts)
+    except KeyError:
+        return redirect(url_for("login"))
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/viewSalesInvoices", methods=["POST", "GET"])
 def viewSalesInvoices(company, email, username, session_key):
+    try:
+        if session[email] == session_key:
+            invoices = SalesInvoices.query.filter_by(company=company).all()
 
-    invoices = SalesInvoices.query.filter_by(company=company).all()
-
-    return render_template("viewSalesInvoices.html", company=company, invoices=invoices)
+            return render_template("viewSalesInvoices.html", company=company, invoices=invoices)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/viewPurchaseInvoices", methods=["POST", "GET"])
 def viewPurchaseInvoices(company, email, username, session_key):
+    try:
+        if session[email] == session_key:
+            invoices = PurchaseInvoices.query.filter_by(company=company).all()
 
-    invoices = PurchaseInvoices.query.filter_by(company=company).all()
-
-    return render_template("viewPurchaseInvoices.html", company=company, invoices=invoices)
+            return render_template("viewPurchaseInvoices.html", company=company, invoices=invoices)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/journal", methods=["POST", "GET"])
 def journal(company, email, username, session_key):
+    try:
+        if session[email] == session_key:
+            if request.method == "POST":
+                journal_date = str(request.form['journalDate'])
+                journal_description = request.form["journalDescription"]
+                debitTotal = request.form["debitTotal"]
+                creditTotal = request.form["creditTotal"]
+                number_of_rows = request.form["number_of_rows"]
+                print(int(number_of_rows) + 1)
 
-    if request.method == "POST":
-        journal_date = str(request.form['journalDate'])
-        journal_description = request.form["journalDescription"]
-        debitTotal = request.form["debitTotal"]
-        creditTotal = request.form["creditTotal"]
-        number_of_rows = request.form["number_of_rows"]
-        print(int(number_of_rows) + 1)
+                for i in range(1, int(number_of_rows)+1):
+                    nominal_code = request.form[str(i) + "_nominal_code"]
+                    description = request.form[str(i) + "_description"]
+                    debit = request.form[str(i) + "_debit"]
+                    credit = request.form[str(i) + "_credit"]
 
-        for i in range(1, int(number_of_rows)+1):
-            nominal_code = request.form[str(i) + "_nominal_code"]
-            description = request.form[str(i) + "_description"]
-            debit = request.form[str(i) + "_debit"]
-            credit = request.form[str(i) + "_credit"]
+                    if debit == "":
+                        debit = 0.00
+                    else:
+                        debit = float(debit)
 
-            if debit == "":
-                debit = 0.00
-            else:
-                debit = float(debit)
-            
-            if credit == "":
-                credit = 0.00
-            else:
-                credit = float(credit)
+                    if credit == "":
+                        credit = 0.00
+                    else:
+                        credit = float(credit)
 
-            print(i, debit, credit)
+                    print(i, debit, credit)
 
-            new_journal = Journals(company=company, journal_date=journal_date,
-                                   journal_description=journal_description,
-                                   nominal_code=nominal_code, description=description,
-                                   debit=debit, credit=credit)
-            db.session.add(new_journal)
+                    new_journal = Journals(company=company, journal_date=journal_date,
+                                           journal_description=journal_description,
+                                           nominal_code=nominal_code, description=description,
+                                           debit=debit, credit=credit)
+                    db.session.add(new_journal)
 
-            account = ChartOfAccounts.query.filter_by(company=company, nominal=nominal_code).first()
-            account.balance += debit
-            account.balance -= credit
+                    account = ChartOfAccounts.query.filter_by(
+                        company=company, nominal=nominal_code).first()
+                    account.balance += debit
+                    account.balance -= credit
 
+                db.session.commit()
 
-        db.session.commit()
+                return render_template("journal.html", company=company)
 
-        return render_template("journal.html", company=company)
-
-    return render_template("journal.html", company=company)
+            return render_template("journal.html", company=company)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
 
 
 if __name__ == "__main__":
