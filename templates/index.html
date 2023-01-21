@@ -10,6 +10,7 @@
 			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 			crossorigin="anonymous" />
 		<link rel="stylesheet" href="{{url_for('static', filename='styles/styles.css')}}" />
+		<link rel="stylesheet" href="{{url_for('static', filename='styles/index.css')}}" />
 		<title>Simple Accounting</title>
 
 		<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
@@ -17,19 +18,61 @@
 		<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 	</head>
 	<body>
-		<div id="heading">
-			<h1><u>Simple Accounting</u></h1>
-			<h2>It's Accounting, Made Simple</h2>
-		</div>
-		<div id="main" class="container">
-			<div class="col align-items-center">
-				<a href="login"><button name="loginButton">Log-In</button></a>
-				<br />
-				<a href="signup"><button name="signinButton">Sign-Up</button></a>
+		<div class="abc">
+			<div id="heading">
+				<h1><u>Simple Accounting</u></h1>
+				<h2>It's Accounting, Made Simple</h2>
+			</div>
+			<div id="main" class="container">
+				<div class="col align-items-center">
+					<a href="login"><button name="loginButton">Log-In</button></a>
+					<br />
+					<a href="signup"><button name="signinButton">Sign-Up</button></a>
+				</div>
 			</div>
 		</div>
-		<div id="root"></div>
+		<br />
+		<div id="root">
+			<div id="box" class="menu">
+				<p><b>Hello and Welcome to our website</b></p>
+			</div>
+			<div id="box2" class="menu2">
+				<p><b>We hope your join us</b></p>
+			</div>
+		</div>
+		<script>
+			let oldScroll = 0;
+			document.querySelector(".menu").style.opacity = 1;
+			document.querySelector(".menu2").style.opacity = 0;
+			window.addEventListener(
+				"scroll",
+				function () {
+					var box = document.querySelector(".menu");
+					var box2 = document.querySelector(".menu2")
+					var leftMargin = box.offsetLeft;
+					var leftMargin2 = box2.offsetLeft;
+					if (window.pageYOffset > oldScroll) {
+						box.style.marginLeft = Number(leftMargin) + 8 + "px";
+						box.style.opacity = Number(box.style.opacity) - 0.01;
 
-		<script type="text/babel" src="{{ url_for('static', filename='react/react_code.jsx') }}"></script>
+						if (Number(box.style.opacity) < 0.1){
+							box2.style.opacity = Number(box2.style.opacity) + 0.01;
+							box2.style.marginLeft = Number(leftMargin2) - 8 + "px";
+						}
+
+					} else {
+						box.style.marginLeft = Number(leftMargin) - 8 + "px";
+						box.style.opacity = Number(box.style.opacity) + 0.02;
+						box2.style.opacity = Number(box2.style.opacity) - 0.02;
+						box2.style.marginLeft = Number(leftMargin2) + 8 + "px";
+						
+					}
+					oldScroll = window.pageYOffset;
+				},
+				false,
+			);
+
+		</script>
+		<!-- <script type="text/babel" src="{{ url_for('static', filename='react/react_code.jsx') }}"></script> -->
 	</body>
 </html>
