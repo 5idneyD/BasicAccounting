@@ -50,17 +50,17 @@
 					var box = document.querySelector(".menu");
 					var box2 = document.querySelector(".menu2");
 					if (window.pageYOffset > oldScroll) {
-						if (Number(oldScroll) < "1700") {
+						if (Number(oldScroll) < "2000") {
 							box.style.opacity = Number(box.style.opacity) - 0.04;
-						} else if (Number(oldScroll) < "3000"){
+						} else if (Number(oldScroll) > "2000"){
 							box2.style.opacity = Number(box2.style.opacity) + 0.04;
 						}
 					} else {
-						if (Number(oldScroll) < "1700") {
+						if (Number(oldScroll) < "2000") {
 							box.style.opacity = Number(box.style.opacity) + 0.04;
 						}
-						else if (Number(oldScroll) > "1700"){
-							box2.style.opacity = Number(box2.style.opacity) - 0.04;
+						else if (Number(oldScroll) > "2000"){
+							box2.style.opacity = Number(box2.style.opacity) - 0.05;
 						}
 					}
 					oldScroll = window.pageYOffset;
