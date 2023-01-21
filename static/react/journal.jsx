@@ -56,6 +56,16 @@ function Journal() {
 		setCredit(creditTotal);
 	}
 
+	function checkBalancing() {
+		if (debit - credit != 0) {
+			document.querySelector("#postButton").setAttribute("disabled", "disabled");
+		} else {
+			try {
+				document.querySelector("#postButton").removeAttribute("disabled");
+			} catch {}
+		}
+	}
+
 	return (
 		<>
 			<div className="col-4">
@@ -109,8 +119,8 @@ function Journal() {
 					<tbody id="bodyTable">{rows}</tbody>
 				</table>
 				<input name="number_of_rows" value={count}></input>
-				<input name="debitTotal" value={debit}></input>
-				<input name="creditTotal" value={credit}></input>
+				<input name="debitTotal" value={debit} onChange={checkBalancing()}></input>
+				<input name="creditTotal" value={credit} onChange={checkBalancing()}></input>
 			</div>
 		</>
 	);

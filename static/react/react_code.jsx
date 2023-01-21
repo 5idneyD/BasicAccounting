@@ -1,6 +1,16 @@
-const Welcome = (info) => {
-	return <h1>Hi {info.name}</h1>;
+const App = (props) => {
+
+	return (
+		<div>
+			<div id="box">
+				
+			</div>
+		</div>
+	)
 };
 
+
+
+
 const rootElement = document.getElementById("root");
-ReactDOM.render(<Welcome name="Sidney" />, rootElement);
+ReactDOM.render(<App />, rootElement);

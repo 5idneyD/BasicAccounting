@@ -10,6 +10,7 @@
 			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 			crossorigin="anonymous" />
 		<link rel="stylesheet" href="{{url_for('static', filename='styles/styles.css')}}" />
+		<link rel="stylesheet" href="{{url_for('static', filename='styles/index.css')}}" />
 		<title>Simple Accounting</title>
 
 		<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
@@ -17,19 +18,56 @@
 		<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 	</head>
 	<body>
-		<div id="heading">
-			<h1><u>Simple Accounting</u></h1>
-			<h2>It's Accounting, Made Simple</h2>
-		</div>
-		<div id="main" class="container">
-			<div class="col align-items-center">
-				<a href="login"><button name="loginButton">Log-In</button></a>
-				<br />
-				<a href="signup"><button name="signinButton">Sign-Up</button></a>
+		<div class="abc">
+			<div id="heading">
+				<h1><u>Simple Accounting</u></h1>
+				<h2>It's Accounting, Made Simple</h2>
+			</div>
+			<div id="main" class="container">
+				<div class="col align-items-center">
+					<a href="login"><button name="loginButton">Log-In</button></a>
+					<br />
+					<a href="signup"><button name="signinButton">Sign-Up</button></a>
+				</div>
 			</div>
 		</div>
-		<div id="root"></div>
-
-		<script type="text/babel" src="{{ url_for('static', filename='react/react_code.jsx') }}"></script>
+		<br />
+		<div id="root">
+			<div id="box" class="menu">
+				<h3><b>Hello and Welcome to our website</b></h3>
+			</div>
+			<div id="box2" class="menu2">
+				<h3><b>We hope your join us</b></h3>
+			</div>
+		</div>
+		<script>
+			let oldScroll = 0;
+			document.querySelector(".menu").style.opacity = 1;
+			document.querySelector(".menu2").style.opacity = 0;
+			window.addEventListener(
+				"scroll",
+				function () {
+					var box = document.querySelector(".menu");
+					var box2 = document.querySelector(".menu2");
+					if (window.pageYOffset > oldScroll) {
+						if (Number(oldScroll) < "2000") {
+							box.style.opacity = Number(box.style.opacity) - 0.04;
+						} else if (Number(oldScroll) > "2000"){
+							box2.style.opacity = Number(box2.style.opacity) + 0.04;
+						}
+					} else {
+						if (Number(oldScroll) < "2000") {
+							box.style.opacity = Number(box.style.opacity) + 0.04;
+						}
+						else if (Number(oldScroll) > "2000"){
+							box2.style.opacity = Number(box2.style.opacity) - 0.05;
+						}
+					}
+					oldScroll = window.pageYOffset;
+				},
+				false,
+			);
+		</script>
+		<!-- <script type="text/babel" src="{{ url_for('static', filename='react/react_code.jsx') }}"></script> -->
 	</body>
 </html>

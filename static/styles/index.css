@@ -1,0 +1,28 @@
+body {
+    height: 6000px;
+}
+
+.menu {
+    margin-top: 30%;
+    margin-left:15%;
+    width: 30%;
+    height: 25px;
+    position: fixed;
+    /* border: 1px dotted; */
+    opacity: 1;
+    color: black;
+}
+
+.menu2 {
+    margin-top: 30%;
+    margin-left: 70%;
+    width: 30%;
+    height: 25px;
+    position: fixed;
+    color: black;
+}
+
+.abc {
+    width: 100%;
+    position: fixed;
+}
