@@ -48,30 +48,25 @@
 				"scroll",
 				function () {
 					var box = document.querySelector(".menu");
-					var box2 = document.querySelector(".menu2")
-					var leftMargin = box.offsetLeft;
-					var leftMargin2 = box2.offsetLeft;
+					var box2 = document.querySelector(".menu2");
 					if (window.pageYOffset > oldScroll) {
-						box.style.marginLeft = Number(leftMargin) + 8 + "px";
-						box.style.opacity = Number(box.style.opacity) - 0.01;
-
-						if (Number(box.style.opacity) < 0.1){
-							box2.style.opacity = Number(box2.style.opacity) + 0.01;
-							box2.style.marginLeft = Number(leftMargin2) - 8 + "px";
+						if (Number(oldScroll) < "1700") {
+							box.style.opacity = Number(box.style.opacity) - 0.04;
+						} else if (Number(oldScroll) < "3000"){
+							box2.style.opacity = Number(box2.style.opacity) + 0.04;
 						}
-
 					} else {
-						box.style.marginLeft = Number(leftMargin) - 8 + "px";
-						box.style.opacity = Number(box.style.opacity) + 0.02;
-						box2.style.opacity = Number(box2.style.opacity) - 0.02;
-						box2.style.marginLeft = Number(leftMargin2) + 8 + "px";
-						
+						if (Number(oldScroll) < "1700") {
+							box.style.opacity = Number(box.style.opacity) + 0.04;
+						}
+						else if (Number(oldScroll) > "1700"){
+							box2.style.opacity = Number(box2.style.opacity) - 0.04;
+						}
 					}
 					oldScroll = window.pageYOffset;
 				},
 				false,
 			);
-
 		</script>
 		<!-- <script type="text/babel" src="{{ url_for('static', filename='react/react_code.jsx') }}"></script> -->
 	</body>
