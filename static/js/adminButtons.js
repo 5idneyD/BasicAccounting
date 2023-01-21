@@ -14,8 +14,8 @@ function clicked(buttonId) {
             element.dataset.selected = 0;
         }
         if (element.dataset.selected == 1) {
-            element.style.backgroundColor = "#151f1e";
-            element.style.color = "#ede599";
+            element.style.backgroundColor = "#A15C38";
+            element.style.color = "#F7F1F0";
         } else {
             element.style.backgroundColor = "rgba(20, 20, 20, 0.4)";
             element.style.color = "#151f1e";

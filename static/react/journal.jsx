@@ -58,10 +58,10 @@ function Journal() {
 
 	function checkBalancing() {
 		if (debit - credit != 0) {
-			document.querySelector("#postButton").setAttribute("disabled", "disabled");
+			document.querySelector("#submitButton").type = "button";
 		} else {
 			try {
-				document.querySelector("#postButton").removeAttribute("disabled");
+				document.querySelector("#submitButton").type = "submit";
 			} catch {}
 		}
 	}
@@ -100,7 +100,7 @@ function Journal() {
 					Add Row
 				</button>
 				<br></br>
-				<button type="submit" id="postButton">
+				<button type="submit" id="submitButton">
 					Post Journal
 				</button>
 			</div>

@@ -1,7 +1,7 @@
 :root {
-    --dark: #151f1e;
-    --light: #e7e48af6;
-    --tableBorder: gray;
+    --dark: #A15C38;
+    --light: #F7F1F0;
+    --tableBorder: #262220;
 }
 
 #heading {
@@ -77,6 +77,8 @@ input[name="creditTotal"] {
 #data {
     border: 2px solid var(--dark);
     height: 72vh;
+    overflow-y: auto;
+    padding-bottom: 1%;
 }
 
 ul {
@@ -161,7 +163,29 @@ th.invoiceHeaderDescription {
 }
 
 button:disabled,
-button:disabled:hover {
+button:disabled:hover,
+button#submitButton[type="button"] {
     color: black;
     background-color: var(--tableBorder);
+}
+
+@keyframes error {
+    0% {
+        tranform: rotate(0deg)
+    }
+    25% {
+        transform: rotate(1deg)
+    }
+    75% {
+        transform: rotate(-1deg)
+    }
+    100%{
+        transform: rotate(0deg)
+    }
+}
+
+.error{
+    animation-name: error;
+    animation-duration: 0.5s;
+    animation-iteration-count: 2;
 }
