@@ -11,6 +11,9 @@
 			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 			crossorigin="anonymous" />
 		<link rel="stylesheet" href="{{url_for('static', filename='styles/styles.css')}}" />
+		<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+		<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 		<title>Simple Accounting</title>
 	</head>
 	<body>
@@ -92,9 +95,9 @@
 											<td>1</td>
 											<td><input type="text" name="1_nominal_code" /></td>
 											<td><input type="text" name="1_description" /></td>
-											<td><input type="text" name="1_net_value" class="net"/></td>
-											<td><input type="text" name="1_vat" class="vat"/></td>
-											<td><input type="text" name="1_total_value" class="tv"/></td>
+											<td><input type="text" name="1_net_value" class="net" /></td>
+											<td><input type="text" name="1_vat" class="vat" /></td>
+											<td><input type="text" name="1_total_value" class="tv" /></td>
 										</tr>
 									</table>
 									<button id="submitButton" type="submit">Submit</button>
@@ -105,10 +108,14 @@
 				</div>
 			</div>
 		</div>
-
+		<div id="root"></div>
 		<script src="{{ url_for('static', filename='js/navDropdown.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/addInvoiceRow.js') }}"></script>
 		<script src="{{url_for('static', filename='js/defaultSalesInvoiceNumber.js')}}"></script>
 		<script src="{{url_for('static', filename='js/totalValue.js')}}"></script>
+		<script src="{{url_for('static', filename='react/errorStyles.jsx')}}"></script>
+		<script>
+
+		</script>
 	</body>
 </html>
