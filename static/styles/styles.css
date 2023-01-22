@@ -1,6 +1,6 @@
 :root {
-    --dark: #A15C38;
-    --light: #F7F1F0;
+    --dark: #a15c38;
+    --light: #f7f1f0;
     --tableBorder: #262220;
 }
 
@@ -78,6 +78,7 @@ input[name="creditTotal"] {
     border: 2px solid var(--dark);
     height: 72vh;
     overflow-y: auto;
+    align-items: center;
     padding-bottom: 1%;
 }
 
@@ -171,21 +172,29 @@ button#submitButton[type="button"] {
 
 @keyframes error {
     0% {
-        tranform: rotate(0deg)
+        tranform: rotate(0deg);
     }
     25% {
-        transform: rotate(1deg)
+        transform: rotate(1deg);
     }
     75% {
-        transform: rotate(-1deg)
+        transform: rotate(-1deg);
     }
-    100%{
-        transform: rotate(0deg)
+    100% {
+        transform: rotate(0deg);
     }
 }
 
-.error{
+.error {
     animation-name: error;
     animation-duration: 0.5s;
     animation-iteration-count: 2;
+}
+
+div.changePassword {
+    width: 20vw;
+    height: 4vh;
+    margin-top: 2vh;
+    margin-left: 26vw;
+    text-align: center;
 }
