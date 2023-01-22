@@ -4,6 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+		<meta name="data" accounting_year="{{accounting_year}}" accounting_period="{{accounting_period}}"/>
 		<link
 			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
 			rel="stylesheet"
@@ -55,6 +56,16 @@
 							Delete User
 						</button>
 					</div>
+					<div class="col">
+						<button
+							type="button"
+							id="closePeriodButton"
+							class="adminButton"
+							data-selected="0"
+							onclick="clicked(event.srcElement.id); changeForm()">
+							Close Period
+						</button>
+					</div>
 					<div class="col"></div>
 				</div>
 			</div>
@@ -62,5 +73,8 @@
 		</form>
 		<script type="text/javascript" src="{{url_for('static', filename='js/admin.js')}}"></script>
 		<script type="text/javascript" src="{{url_for('static', filename='js/adminButtons.js')}}"></script>
+		<script>
+
+		</script>
 	</body>
 </html>

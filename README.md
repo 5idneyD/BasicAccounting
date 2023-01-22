@@ -19,7 +19,7 @@ Features I am planning on adding:
     - Balance Sheet
     - P&L
 - Double Entry Journals ✔️
-- Periods
+- Periods ✔️
 - Change passwords ✔️
 - Admin Page ✔️
     - Add Users ✔️

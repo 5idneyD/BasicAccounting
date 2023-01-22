@@ -1,9 +1,11 @@
 var addUserButton = document.querySelector("#addUserButton");
 var removeUserButton = document.querySelector("#removeUserButton");
 var chartOfAccountsButton = document.querySelector("#chartOfAccountsButton");
+var closePeriodButton = document.querySelector("#closePeriodButton");
 
 removeUserButton.style.backgroundColor = "rgba(20, 20, 20, 0.4)";
 chartOfAccountsButton.style.backgroundColor = "rgba(20, 20, 20, 0.4)";
+closePeriodButton.style.backgroundColor = "rgba(20, 20, 20, 0.4)";
 
 function clicked(buttonId) {
     var adminButtons = document.querySelectorAll(".adminButton");
