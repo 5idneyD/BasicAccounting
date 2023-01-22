@@ -9,6 +9,9 @@
 			rel="stylesheet"
 			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 			crossorigin="anonymous" />
+		<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+		<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 		<link rel="stylesheet" href="{{url_for('static', filename='styles/styles.css')}}" />
 		<title>Simple Accounting</title>
 	</head>
@@ -20,67 +23,38 @@
 		<div class="flex-column"></div>
 		<div id="main" class="container-fluid">
 			<div class="row">
-				<div id="nav" class="col-3 m-0 p-0">
-					<ul>
-						<li id="salesLedgerMenu" class="menuHead">
-							<a id="salesLedger" data-expanded="false">Sales Ledger</a><br />
-						</li>
-						<li id="purchaseLedgerMenu" class="menuHead">
-							<a id="purchaseLedger" data-expanded="false">Purchase Ledger</a><br />
-						</li>
-						<li id="financialsMenu" class="menuHead">
-							<a id="financials" data-expanded="false">Financials</a><br />
-						</li>
-					</ul>
-				</div>
+				<div id="nav" class="col-3 m-0 p-0"></div>
 				<div id="data" class="col-9">
 					<table>
 						<tr>
 							<th>Supplier Code</th>
-                            <th>Invoice Number</th>
-                            <th>Invoice Date</th>
-                            <th>Invoice Description</th>
-                            <th>Net Value</th>
-                            <th>VAT Value</th>
-                            <th>Total Value</th>
-                            <th>Posted By</th>
-                            <th>Posted On</th>
+							<th>Invoice Number</th>
+							<th>Invoice Date</th>
+							<th>Invoice Description</th>
+							<th>Net Value</th>
+							<th>VAT Value</th>
+							<th>Total Value</th>
+							<th>Posted By</th>
+							<th>Posted On</th>
 						</tr>
-                        {% for invoice in invoices %}
-                            <tr>
-                                <td>
-                                    {{ invoice.supplier_code }}
-                                </td>
-                                <td>
-                                    {{ invoice.invoice_number }}
-                                </td>
-                                <td>
-                                    {{ invoice.invoice_date }}
-                                </td>
-                                <td>
-                                    {{ invoice.description }}
-                                </td>
-                                <td>
-                                    {{ invoice.net_value }}
-                                </td>
-                                <td>
-                                    {{ invoice.vat_value }}
-                                </td>
-                                <td>
-                                    {{ invoice.total_value }}
-                                </td>
-                                <td>
-                                    {{ invoice.user_posted }}
-                                </td>
-                                <td>
-                                    {{ invoice.date_posted }}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                    </table>
+						{% for invoice in invoices %}
+						<tr>
+							<td>{{ invoice.supplier_code }}</td>
+							<td>{{ invoice.invoice_number }}</td>
+							<td>{{ invoice.invoice_date }}</td>
+							<td>{{ invoice.description }}</td>
+							<td>{{ invoice.net_value }}</td>
+							<td>{{ invoice.vat_value }}</td>
+							<td>{{ invoice.total_value }}</td>
+							<td>{{ invoice.user_posted }}</td>
+							<td>{{ invoice.date_posted }}</td>
+						</tr>
+						{% endfor %}
+					</table>
 				</div>
 			</div>
 		</div>
+		<script type="text/babel" src="{{ url_for('static', filename='react/navigation.jsx') }}"></script>
 		<script src="{{ url_for('static', filename='js/navDropdown.js') }}"></script>
 	</body>
 </html>

@@ -9,6 +9,9 @@
 			rel="stylesheet"
 			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 			crossorigin="anonymous" />
+		<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+		<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 		<link rel="stylesheet" href="{{url_for('static', filename='styles/styles.css')}}" />
 		<title>Simple Accounting</title>
 	</head>
@@ -20,19 +23,7 @@
 		<div class="flex-column"></div>
 		<div id="main" class="container-fluid">
 			<div class="row">
-				<div id="nav" class="col-3 m-0 p-0">
-					<ul>
-						<li id="salesLedgerMenu" class="menuHead">
-							<a id="salesLedger" data-expanded="false">Sales Ledger</a><br />
-						</li>
-						<li id="purchaseLedgerMenu" class="menuHead">
-							<a id="purchaseLedger" data-expanded="false">Purchase Ledger</a><br />
-						</li>
-						<li id="financialsMenu" class="menuHead">
-							<a id="financials" data-expanded="false">Financials</a><br />
-						</li>
-					</ul>
-				</div>
+				<div id="nav" class="col-3 m-0 p-0"></div>
 				<div id="data" class="col-9">
 					<form method="post">
 						<div class="container">
@@ -40,7 +31,12 @@
 								<table id="headTable">
 									<tr>
 										<td>Invoice Number</td>
-										<td><input type="invoice" name="invoice_number" placeholder="Enter Invoice No." /></td>
+										<td>
+											<input
+												type="invoice"
+												name="invoice_number"
+												placeholder="Enter Invoice No." />
+										</td>
 									</tr>
 									<tr>
 										<td>Invoice Date</td>
@@ -71,10 +67,10 @@
 							</div>
 							<div class="col">
 								<div class="container">
-									<table name="data" data-rows=1 id="bodyTable">
-                                        <input id="number_of_rows" name="number_of_rows" value=data-rows>
+									<table name="data" data-rows="1" id="bodyTable">
+										<input id="number_of_rows" name="number_of_rows" value="data-rows" />
 										<tr>
-                                            <th>Row</th>
+											<th>Row</th>
 											<th class="invoiceHeader">Nominal Code</th>
 											<th class="invoiceHeaderDescription">Description</th>
 											<th class="invoiceHeader">Net Value</th>
@@ -82,12 +78,12 @@
 											<th class="invoiceHeader">Total Value</th>
 										</tr>
 										<tr class="invoiceRow">
-                                            <td>1</td>
-											<td><input type="text" name="1_nominal_code"/></td>
-											<td><input type="text" name="1_description"/></td>
-											<td><input type="text" name="1_net_value"/></td>
-											<td><input type="text" name="1_vat"/></td>
-											<td><input type="text" name="1_total_value"/></td>
+											<td>1</td>
+											<td><input type="text" name="1_nominal_code" /></td>
+											<td><input type="text" name="1_description" /></td>
+											<td><input type="text" name="1_net_value" /></td>
+											<td><input type="text" name="1_vat" /></td>
+											<td><input type="text" name="1_total_value" /></td>
 										</tr>
 									</table>
 
@@ -99,6 +95,7 @@
 				</div>
 			</div>
 		</div>
+		<script type="text/babel" src="{{ url_for('static', filename='react/navigation.jsx') }}"></script>
 		<script src="{{ url_for('static', filename='js/navDropdown.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/addInvoiceRow.js') }}"></script>
 		<script></script>
