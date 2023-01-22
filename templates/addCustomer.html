@@ -9,6 +9,9 @@
 			rel="stylesheet"
 			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 			crossorigin="anonymous" />
+		<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+		<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 		<link rel="stylesheet" href="{{url_for('static', filename='styles/styles.css')}}" />
 		<title>Simple Accounting</title>
 	</head>
@@ -20,29 +23,27 @@
 		<div class="flex-column"></div>
 		<div id="main" class="container-fluid">
 			<div class="row">
-				<div id="nav" class="col-3 m-0 p-0">
-					<ul>
-						<li id="salesLedgerMenu" class="menuHead">
-							<a id="salesLedger" data-expanded="false">Sales Ledger</a><br />
-						</li>
-						<li id="purchaseLedgerMenu" class="menuHead">
-							<a id="purchaseLedger" data-expanded="false">Purchase Ledger</a><br />
-						</li>
-						<li id="financialsMenu" class="menuHead">
-							<a id="financials" data-expanded="false">Financials</a><br />
-						</li>
-					</ul>
-				</div>
+				<div id="nav" class="col-3 m-0 p-0"></div>
 				<div id="data" class="col-9">
 					<form id="form" method="post">
 						<div class="row">
 							<div class="col">
-								<input type="name" name="customer_name" placeholder="Customer Name" aria-required="true" />
+								<input
+									type="name"
+									name="customer_name"
+									placeholder="Customer Name"
+									aria-required="true" />
 							</div>
 						</div>
 						<div class="row">
 							<div class="col">
-								<input type="name" name="customer_code" placeholder="Customer Code" minlength="6" maxlength="6" aria-required="true" />
+								<input
+									type="name"
+									name="customer_code"
+									placeholder="Customer Code"
+									minlength="6"
+									maxlength="6"
+									aria-required="true" />
 							</div>
 						</div>
 						<div class="row">
@@ -54,6 +55,7 @@
 				</div>
 			</div>
 		</div>
+		<script type="text/babel" src="{{ url_for('static', filename='react/navigation.jsx') }}"></script>
 		<script src="{{ url_for('static', filename='js/navDropdown.js') }}"></script>
 	</body>
 </html>

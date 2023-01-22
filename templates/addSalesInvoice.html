@@ -24,19 +24,7 @@
 		<div class="flex-column"></div>
 		<div id="main" class="container-fluid">
 			<div class="row">
-				<div id="nav" class="col-3 m-0 p-0">
-					<ul>
-						<li id="salesLedgerMenu" class="menuHead">
-							<a id="salesLedger" data-expanded="false">Sales Ledger</a><br />
-						</li>
-						<li id="purchaseLedgerMenu" class="menuHead">
-							<a id="purchaseLedger" data-expanded="false">Purchase Ledger</a><br />
-						</li>
-						<li id="financialsMenu" class="menuHead">
-							<a id="financials" data-expanded="false">Financials</a><br />
-						</li>
-					</ul>
-				</div>
+				<div id="nav" class="col-3 m-0 p-0"></div>
 				<div id="data" class="col-9">
 					<form method="post">
 						<div class="container">
@@ -108,14 +96,10 @@
 				</div>
 			</div>
 		</div>
-		<div id="root"></div>
+		<script type="text/babel" src="{{ url_for('static', filename='react/navigation.jsx') }}"></script>
 		<script src="{{ url_for('static', filename='js/navDropdown.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/addInvoiceRow.js') }}"></script>
 		<script src="{{url_for('static', filename='js/defaultSalesInvoiceNumber.js')}}"></script>
 		<script src="{{url_for('static', filename='js/totalValue.js')}}"></script>
-		<script src="{{url_for('static', filename='react/errorStyles.jsx')}}"></script>
-		<script>
-
-		</script>
 	</body>
 </html>

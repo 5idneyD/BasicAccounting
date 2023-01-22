@@ -20,10 +20,12 @@ Features I am planning on adding:
     - P&L
 - Double Entry Journals ✔️
 - Periods
+- Change passwords ✔️
 - Admin Page ✔️
     - Add Users ✔️
     - Remove Users ✔️
     - Add Nominal Accounts ✔️
+
 
 Tech Stack Being Used:
 - SQLAlchemy  <strike>(SQLite3)</strike>   (MySQL) 
