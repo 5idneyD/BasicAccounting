@@ -65,7 +65,9 @@ select.invoice {
 input#number_of_rows,
 input[name="number_of_rows"],
 input[name="debitTotal"],
-input[name="creditTotal"] {
+input[name="creditTotal"],
+input[name="period"],
+input[name="year"] {
     display: none;
 }
 .container,

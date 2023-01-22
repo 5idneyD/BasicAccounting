@@ -36,6 +36,8 @@
 							<th>Total Value</th>
 							<th>Posted By</th>
 							<th>Posted On</th>
+							<th>Year</th>
+							<th>Period</th>
 						</tr>
 						{% for invoice in invoices %}
 						<tr>
@@ -48,6 +50,8 @@
 							<td>{{ invoice.total_value }}</td>
 							<td>{{ invoice.user_posted }}</td>
 							<td>{{ invoice.date_posted }}</td>
+							<td>{{ invoice.accounting_year }}</td>
+							<td>{{ invoice.accounting_period }}</td>
 						</tr>
 						{% endfor %}
 					</table>

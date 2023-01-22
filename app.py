@@ -33,6 +33,8 @@ class Companies(db.Model):
     company = db.Column(db.String(40))
     admin_email = db.Column(db.String(40))
     admin_password = db.Column(db.String(40))
+    accounting_year = db.Column(db.String(4))
+    accounting_period = db.Column(db.String(4))
 
 
 class Users(db.Model):
@@ -83,6 +85,8 @@ class SalesInvoices(db.Model):
     date_posted = db.Column(db.String(40))
     user_posted = db.Column(db.String(40))
     reference = db.Column(db.String(50))
+    accounting_year = db.Column(db.String(4))
+    accounting_period = db.Column(db.String(4))
 
 
 class PurchaseInvoices(db.Model):
@@ -98,6 +102,8 @@ class PurchaseInvoices(db.Model):
     total_value = db.Column(db.Float)
     date_posted = db.Column(db.String(40))
     user_posted = db.Column(db.String(40))
+    accounting_year = db.Column(db.String(4))
+    accounting_period = db.Column(db.String(4))
 
 
 class Journals(db.Model):
@@ -111,6 +117,8 @@ class Journals(db.Model):
     credit = db.Column(db.Float)
     posted_by = db.Column(db.String(40))
     posted_on = db.Column(db.String(40))
+    accounting_year = db.Column(db.String(4))
+    accounting_period = db.Column(db.String(4))
 
 
 with app.app_context():
@@ -162,9 +170,11 @@ def signup():
         company_name = request.form["company"]
         company_email = request.form["email"]
         company_password = request.form["password"]
+        accounting_year = request.form["accounting_year"]
+        accounting_period = request.form["accounting_period"]
 
         new_company = Companies(
-            company=company_name, admin_email=company_email, admin_password=company_password)
+            company=company_name, admin_email=company_email, admin_password=company_password, accounting_year=accounting_year, accounting_period=accounting_period)
         db.session.add(new_company)
         new_admin = Users(company=company_name, email=company_email, username=company_email,
                           password=company_password, admin=True)
@@ -178,6 +188,10 @@ def signup():
 
 @app.route("/admin/<company>/<email>/<session_key>", methods=["POST", "GET"])
 def admin(company, email, session_key):
+
+    company_data = Companies.query.filter_by(company=company).first()
+    accounting_year = company_data.accounting_year
+    accounting_period = company_data.accounting_period
 
     try:
         if session[email] == session_key:
@@ -193,6 +207,7 @@ def admin(company, email, session_key):
                     db.session.commit()
 
                 elif "addNominalForm" in request.form:
+                    print("nominal account")
                     nominal = request.form["nominal"]
                     account_name = request.form["accountName"]
                     new_nominal = ChartOfAccounts(
@@ -206,15 +221,33 @@ def admin(company, email, session_key):
                         email=user_email, company=company).first()
                     db.session.delete(user)
                     db.session.commit()
+
+                elif "closePeriodForm" in request.form:
+                    current_period = request.form["period"]
+                    current_year = request.form["year"]
+                    if current_period == "12":
+                        new_period = "1"
+                        new_year = str(int(current_year) + 1)
+                        company_data.accounting_period = new_period
+                        company_data.accounting_year = new_year
+                    else:
+                        new_period = str(int(current_period) + 1)
+                        company_data.accounting_period = new_period
+
+                    db.session.commit()
+                    company_data = Companies.query.filter_by(company=company).first()
+                    accounting_year = company_data.accounting_year
+                    accounting_period = company_data.accounting_period
+                    return render_template("admin.html", company=company, email=email, accounting_year=accounting_year, accounting_period=accounting_period)
                 else:
                     pass
 
-            return render_template("admin.html", company=company)
+            return render_template("admin.html", company=company, email=email, accounting_year=accounting_year, accounting_period=accounting_period)
 
     except KeyError:
         return redirect(url_for("login"))
 
-    return 0
+    return render_template("admin.html", company=company, email=email, accounting_year=accounting_year, accounting_period=accounting_period)
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/dashboard", methods=["POST", "GET"])
@@ -324,6 +357,9 @@ def addSalesInvoice(company, email, username, session_key):
         if session[email] == session_key:
             customers = Customers.query.filter_by(company=company).all()
             invoices = SalesInvoices.query.filter_by(company=company).all()
+            company = Companies.query.filter_by(company=company).first()
+            accounting_year = company.accounting_year
+            accounting_period = company.accounting_period
             references = []
             for invoice in invoices:
                 references.append(str(invoice.reference))
@@ -348,7 +384,8 @@ def addSalesInvoice(company, email, username, session_key):
                                                 nominal_code=nominal_code, description=description,
                                                 net_value=net_value, vat_value=vat, total_value=total_value,
                                                 date_posted=dt.datetime.today().strftime("%Y-%m-%d"),
-                                                user_posted=username, reference=reference)
+                                                user_posted=username, reference=reference,
+                                                accounting_year=accounting_year, accounting_period=accounting_period)
                     db.session.add(new_invoice)
 
                     account = ChartOfAccounts.query.filter_by(
@@ -370,6 +407,9 @@ def addPurchaseInvoice(company, email, username, session_key):
     try:
         if session[email] == session_key:
             suppliers = Suppliers.query.filter_by(company=company).all()
+            company = Companies.query.filter_by(company=company).first()
+            accounting_year = company.accounting_year
+            accounting_period = company.accounting_period
 
             if request.method == "POST":
                 invoice_number = request.form['invoice_number']
@@ -389,7 +429,8 @@ def addPurchaseInvoice(company, email, username, session_key):
                                                    invoice_number=invoice_number, invoice_date=invoice_date,
                                                    nominal_code=nominal_code, description=description,
                                                    net_value=net_value, vat_value=vat, total_value=total_value,
-                                                   date_posted=dt.datetime.today().strftime("%Y-%m-%d"), user_posted=username)
+                                                   date_posted=dt.datetime.today().strftime("%Y-%m-%d"), user_posted=username,
+                                                   accounting_year=accounting_year, accounting_period=accounting_period)
                     db.session.add(new_invoice)
 
                     account = ChartOfAccounts.query.filter_by(
@@ -474,9 +515,9 @@ def journal(company, email, username, session_key):
                         pass
                     else:
                         new_journal = Journals(company=company, journal_date=journal_date,
-                                            journal_description=journal_description,
-                                            nominal_code=nominal_code, description=description,
-                                            debit=debit, credit=credit, posted_by=username)
+                                               journal_description=journal_description,
+                                               nominal_code=nominal_code, description=description,
+                                               debit=debit, credit=credit, posted_by=username)
                         db.session.add(new_journal)
 
                         account = ChartOfAccounts.query.filter_by(
@@ -506,7 +547,8 @@ def changePassword(company, email, username, session_key):
         if new_password != new_password2:
             return render_template("changePassword.html", company=company, email=email, message="These passwords do not match. Please try again with matching passwords")
         else:
-            user = Users.query.filter_by(company=company, email=user_email).first()
+            user = Users.query.filter_by(
+                company=company, email=user_email).first()
             if user.password == old_password:
                 user.password = new_password
                 db.session.commit()
@@ -515,7 +557,6 @@ def changePassword(company, email, username, session_key):
 
         return render_template("changePassword.html", company=company, email=email, message="Your password has been changed")
     return render_template("changePassword.html", company=company, email=email, message="")
-
 
 
 if __name__ == "__main__":
