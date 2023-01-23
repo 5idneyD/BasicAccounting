@@ -31,12 +31,12 @@ Tech Stack Being Used:
 - SQLAlchemy  <strike>(SQLite3)</strike>   (MySQL) 
 - Flask
 
--  <strike>Vue.Js</strike>   Vanilla.Js
+-  <strike>Vue.Js</strike>   Vanilla Js & React.JS
 
 - Bootstrap 5
 - Python 3.11
 
 Potential Features In The Future
-- Different permissions for different users
+- Different permissions for different users ✔️
 - Email invoices to customers once posted
 - Budget

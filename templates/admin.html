@@ -22,6 +22,7 @@
 			<h1><u>{{company}}</u></h1>
 			<h2>Admin</h2>
 		</div>
+		{% if admin==3 %}
 		<form id="form" method="post">
 			<div class="container">
 				<div class="row align-items-center justify-content-center">
@@ -71,10 +72,41 @@
 			</div>
 			<div id="body" class="d-flex flex-column mt-5 min-vw-100"></div>
 		</form>
+		{% elif admin==2 %}
+		<form id="form" method="post">
+			<div class="container">
+				<div class="row align-items-center justify-content-center">
+					<div class="col"></div>
+					<div class="col">
+						<button
+							type="button"
+							id="chartOfAccountsButton"
+							class="adminButton"
+							data-selected="1"
+							onclick="clicked(event.srcElement.id); changeForm()">
+							Chart Of Accounts
+						</button>
+					</div>
+					<div class="col">
+						<button
+							type="button"
+							id="closePeriodButton"
+							class="adminButton"
+							data-selected="0"
+							onclick="clicked(event.srcElement.id); changeForm()">
+							Close Period
+						</button>
+					</div>
+					<div class="col"></div>
+				</div>
+			</div>
+			<div id="body" class="d-flex flex-column mt-5 min-vw-100"></div>
+		</form>
+		{% else %}
+		<h1>You do not have Admin Permissions</h1>
+		{% endif %}
 		<script type="text/javascript" src="{{url_for('static', filename='js/admin.js')}}"></script>
 		<script type="text/javascript" src="{{url_for('static', filename='js/adminButtons.js')}}"></script>
-		<script>
-
-		</script>
+		
 	</body>
 </html>

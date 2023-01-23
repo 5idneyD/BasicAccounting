@@ -47,6 +47,8 @@ input[type="invoice"],
 input[type="journal"],
 input[type="date"],
 select.invoice,
+select.adminLevelSelect,
+select:focus,
 input::placeholder,
 input:focus {
     background-color: var(--light);
@@ -56,10 +58,17 @@ input:focus {
 input[type="invoice"],
 input[type="journal"],
 input[type="date"],
-select.invoice {
+select.invoice,
+select.adminLevelSelect {
     margin: auto;
     border: 1px solid var(--tableBorder);
     width: 80%;
+    text-align: center;
+}
+select.adminLevelSelect {
+    margin-top: 5%;
+    width: 13vw;
+    border: 2px solid var(--dark);
     text-align: center;
 }
 input#number_of_rows,
