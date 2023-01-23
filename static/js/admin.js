@@ -40,6 +40,16 @@ var addUser = `
                 </div>
             </div>
             <div class="row">
+                <div class="col">
+                    <select name="adminLevel" class="adminLevelSelect">
+                    <option>Select Permission Level</option>
+                        <option value="1">Basic</option>
+                        <option value="2">Basic Admin</option>
+                        <option value="3">Advanced Admin</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col mt-5">
                     <button type="submit" name="addUserForm">Add User</button>
                 </div>
@@ -113,8 +123,6 @@ var chartOfAccounts =
                 </div>
             </div>
         </div>
-
-
 `
 
 

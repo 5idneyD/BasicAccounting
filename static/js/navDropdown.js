@@ -74,7 +74,7 @@ document.addEventListener(
                         e.target.id +
                         "Option><a class='menuOption " +
                         e.target.id +
-                        "Option' href='" + url + "/chartOfAccounts'>Admin Page</a><br class=" +
+                        "Option' href='" + url + "/admin'>Admin Page</a><br class=" +
                         e.target.id +
                         "Option><a class='menuOption " +
                         e.target.id +

@@ -43,7 +43,7 @@ class Users(db.Model):
     username = db.Column(db.String(40))
     email = db.Column(db.String(40))
     password = db.Column(db.String(40))
-    admin = db.Column(db.Boolean)
+    admin = db.Column(db.String(1))
 
     def __repr__(self):
         return f"<id={self.id}, username={self.username}>, admin={self.admin}"
@@ -154,10 +154,7 @@ def login():
         for user in users:
             if user.password == password:
                 session[email] = os.urandom(12).hex()
-                if user.admin == True:
-                    return redirect(url_for("admin", company=user.company, email=email, session_key=session[email]))
-                else:
-                    return redirect(url_for("dashboard", company=user.company,
+                return redirect(url_for("dashboard", company=user.company,
                                             email=email, username=user.username, session_key=session[email]))
 
     return render_template("login.html")
@@ -177,21 +174,21 @@ def signup():
             company=company_name, admin_email=company_email, admin_password=company_password, accounting_year=accounting_year, accounting_period=accounting_period)
         db.session.add(new_company)
         new_admin = Users(company=company_name, email=company_email, username=company_email,
-                          password=company_password, admin=True)
+                          password=company_password, admin=3)
         db.session.add(new_admin)
         db.session.commit()
 
         session[company_email] = os.urandom(12).hex()
-        return redirect(url_for("admin", company=company_name, email=company_email, session_key=session[company_email]))
+        return redirect(url_for("admin", company=company_name, email=company_email, username=company_email, session_key=session[company_email]))
     return render_template("signup.html")
 
-
-@app.route("/admin/<company>/<email>/<session_key>", methods=["POST", "GET"])
-def admin(company, email, session_key):
+@app.route("/<company>/<email>/<username>/<session_key>/admin", methods=["POST", "GET"])
+def admin(company, email, username, session_key):
 
     company_data = Companies.query.filter_by(company=company).first()
     accounting_year = company_data.accounting_year
     accounting_period = company_data.accounting_period
+    permission_level = Users.query.filter_by(company=company, email=email).first().admin
 
     try:
         if session[email] == session_key:
@@ -200,9 +197,11 @@ def admin(company, email, session_key):
                     new_name = request.form["name"]
                     new_email = request.form["email"]
                     new_password = request.form["password"]
-
+                    admin_permission = "1"
+                    admin_permission = request.form['adminLevel']
+                    print(admin_permission)
                     new_user = Users(company=company, username=new_name, email=new_email,
-                                     password=new_password, admin=False)
+                                     password=new_password, admin=admin_permission)
                     db.session.add(new_user)
                     db.session.commit()
 
@@ -238,16 +237,16 @@ def admin(company, email, session_key):
                     company_data = Companies.query.filter_by(company=company).first()
                     accounting_year = company_data.accounting_year
                     accounting_period = company_data.accounting_period
-                    return render_template("admin.html", company=company, email=email, accounting_year=accounting_year, accounting_period=accounting_period)
+                    return render_template("admin.html", company=company, email=email, admin=permission_level, accounting_year=accounting_year, accounting_period=accounting_period)
                 else:
                     pass
 
-            return render_template("admin.html", company=company, email=email, accounting_year=accounting_year, accounting_period=accounting_period)
+            return render_template("admin.html", company=company, email=email, admin=permission_level, accounting_year=accounting_year, accounting_period=accounting_period)
 
     except KeyError:
         return redirect(url_for("login"))
 
-    return render_template("admin.html", company=company, email=email, accounting_year=accounting_year, accounting_period=accounting_period)
+    return render_template("admin.html", company=company, email=email, admin=permission_level, accounting_year=accounting_year, accounting_period=accounting_period)
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/dashboard", methods=["POST", "GET"])

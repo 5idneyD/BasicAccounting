@@ -17,6 +17,7 @@ function App() {
 				<a id="financials" data-expanded="false">
 					Financials
 				</a>
+				 
 				<br />
 			</li>
 			<li id="otherMenu" className="menuHead">

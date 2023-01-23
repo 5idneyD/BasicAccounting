@@ -31,7 +31,7 @@ Tech Stack Being Used:
 - SQLAlchemy  <strike>(SQLite3)</strike>   (MySQL) 
 - Flask
 
--  <strike>Vue.Js</strike>   Vanilla.Js
+-  <strike>Vue.Js</strike>   Vanilla Js & React.JS
 
 - Bootstrap 5
 - Python 3.11
