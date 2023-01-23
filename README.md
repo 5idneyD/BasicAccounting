@@ -37,6 +37,6 @@ Tech Stack Being Used:
 - Python 3.11
 
 Potential Features In The Future
-- Different permissions for different users
+- Different permissions for different users ✔️
 - Email invoices to customers once posted
 - Budget
