@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+			crossorigin="anonymous" />
+		<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+		<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+		<link rel="stylesheet" href="{{url_for('static', filename='styles/styles.css')}}" />
+		<title>Simple Accounting</title>
+	</head>
+	<body>
+		<div id="heading" class="conatiner">
+			<h1><u>{{company}}</u></h1>
+			<h2>Balance Sheet</h2>
+		</div>
+		<div class="flex-column"></div>
+		<div id="main" class="container-fluid">
+			<div class="row">
+				<div id="nav" class="col-3 m-0 p-0"></div>
+				<div id="data" class="col-9">
+					<table id="balanceSheet">
+						<tr>
+							<th>Nominal Code</th>
+							<th>Account Name</th>
+							<th>Debit</th>
+							<th>Credit</th>
+						</tr>
+						
+						{% for account in data %}
+							{% if account.nominal < 60000 %}
+								{% else %}
+								<tr>
+									<td>{{account.nominal}}</td>
+									<td>{{account.account_name}}</td>
+									{% if account.balance > 0.00 %}
+										<td>{{ account.balance }}</td>
+										<td></td>
+									{% elif account.balance < 0.00 %}
+										<td></td>
+										<td>{{ -account.balance }}</td>
+									{% else %}
+										<td></td>
+										<td></td>
+									{% endif %}
+								</tr>
+							{% endif %}
+						{% endfor %}
+						<tr>
+							<td></td>
+							<td>Total Assets</td>
+							<td>{{totalAssets}}</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>Total Liabilities</td>
+							<td></td>
+							<td>{{totalLiabilities}}</td>
+						</tr>
+
+						<tr>
+							<td></td>
+							<td>Net Assets</td>
+							{% if totalAssets - totalLiabilities > 0.00 %}
+							<td>{{totalAssets - totalLiabilities}}</td>
+							<td></td>
+							{% else %}
+							<td></td>
+							<td>{{totalLiabilities - totalAssets}}</td>
+							{% endif %}
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<script type="text/babel" src="{{ url_for('static', filename='react/navigation.jsx') }}"></script>
+		<script src="{{ url_for('static', filename='js/navDropdown.js') }}"></script>
+	</body>
+</html>

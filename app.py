@@ -558,5 +558,20 @@ def changePassword(company, email, username, session_key):
     return render_template("changePassword.html", company=company, email=email, message="")
 
 
+@app.route("/<company>/<email>/<username>/<session_key>/balanceSheet", methods=["POST", "GET"])
+def balanceSheet(company, email, username, session_key):
+    data = ChartOfAccounts.query.filter_by(company=company).all()
+    totalAssets= 0
+    totalLiabilities = 0
+    for account in data:
+        if account.nominal < 60000:
+            pass
+        elif account.nominal < 70000:
+            totalAssets += account.balance
+        else:
+            totalLiabilities -= account.balance
+    return render_template("balanceSheet.html", company=company, data=data, totalAssets=totalAssets, totalLiabilities=totalLiabilities)
+
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
