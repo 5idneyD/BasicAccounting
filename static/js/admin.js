@@ -109,7 +109,7 @@ var chartOfAccounts =
         <div class="container w-50">
             <div class="row">
                 <div class="col">
-                    <input type="name" name="nominal" placeholder="Nominal Code" minlength='5' aria-required="true"/>
+                    <input type="name" name="nominal" placeholder="Nominal Code" minlength='5' maxlength='5' aria-required="true"/>
                 </div>
             </div>
             <div class="row">
@@ -120,6 +120,16 @@ var chartOfAccounts =
             <div class="row">
                 <div class="col mt-5">
                     <button type="submit" name="addNominalForm">Add Nominal Account</button>
+                    <div>
+                        <ol>
+                        <li><b>Nominal Code Guide</b></li>
+                        <li>Revenue: 1</li>
+                        <li>Direct Costs: 2</li>
+                        <li>Overheads: 3</li>
+                        <li>Assets: 6</li>
+                        <li>Liabilities: 7</li>
+                        </ol>
+                    </div>
                 </div>
             </div>
         </div>
