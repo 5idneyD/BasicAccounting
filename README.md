@@ -40,3 +40,5 @@ Potential Features In The Future
 - Different permissions for different users ✔️
 - Email invoices to customers once posted
 - Budget
+- Filter/Sort Reports
+- Export reports to excel/csv files
