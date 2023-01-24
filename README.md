@@ -16,7 +16,7 @@ Features I am planning on adding:
 - General Ledger
     - Chart Of Accounts ✔️
     - Trial Balance ✔️
-    - Balance Sheet
+    - Balance Sheet ✔️
     - P&L
 - Double Entry Journals ✔️
 - Periods ✔️
