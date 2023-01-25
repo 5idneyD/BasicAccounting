@@ -155,7 +155,7 @@ def login():
             if user.password == password:
                 session[email] = os.urandom(12).hex()
                 return redirect(url_for("dashboard", company=user.company,
-                                            email=email, username=user.username, session_key=session[email]))
+                                        email=email, username=user.username, session_key=session[email]))
 
     return render_template("login.html")
 
@@ -182,13 +182,15 @@ def signup():
         return redirect(url_for("admin", company=company_name, email=company_email, username=company_email, session_key=session[company_email]))
     return render_template("signup.html")
 
+
 @app.route("/<company>/<email>/<username>/<session_key>/admin", methods=["POST", "GET"])
 def admin(company, email, username, session_key):
 
     company_data = Companies.query.filter_by(company=company).first()
     accounting_year = company_data.accounting_year
     accounting_period = company_data.accounting_period
-    permission_level = Users.query.filter_by(company=company, email=email).first().admin
+    permission_level = Users.query.filter_by(
+        company=company, email=email).first().admin
 
     try:
         if session[email] == session_key:
@@ -234,7 +236,8 @@ def admin(company, email, username, session_key):
                         company_data.accounting_period = new_period
 
                     db.session.commit()
-                    company_data = Companies.query.filter_by(company=company).first()
+                    company_data = Companies.query.filter_by(
+                        company=company).first()
                     accounting_year = company_data.accounting_year
                     accounting_period = company_data.accounting_period
                     return render_template("admin.html", company=company, email=email, admin=permission_level, accounting_year=accounting_year, accounting_period=accounting_period)
@@ -356,9 +359,9 @@ def addSalesInvoice(company, email, username, session_key):
         if session[email] == session_key:
             customers = Customers.query.filter_by(company=company).all()
             invoices = SalesInvoices.query.filter_by(company=company).all()
-            company = Companies.query.filter_by(company=company).first()
-            accounting_year = company.accounting_year
-            accounting_period = company.accounting_period
+            company_data = Companies.query.filter_by(company=company).first()
+            accounting_year = company_data.accounting_year
+            accounting_period = company_data.accounting_period
             references = []
             for invoice in invoices:
                 references.append(str(invoice.reference))
@@ -406,9 +409,9 @@ def addPurchaseInvoice(company, email, username, session_key):
     try:
         if session[email] == session_key:
             suppliers = Suppliers.query.filter_by(company=company).all()
-            company = Companies.query.filter_by(company=company).first()
-            accounting_year = company.accounting_year
-            accounting_period = company.accounting_period
+            company_data = Companies.query.filter_by(company=company).first()
+            accounting_year = company_data.accounting_year
+            accounting_period = company_data.accounting_period
 
             if request.method == "POST":
                 invoice_number = request.form['invoice_number']
@@ -440,17 +443,6 @@ def addPurchaseInvoice(company, email, username, session_key):
             return render_template("addPurchaseInvoice.html", company=company, email=email, username=username, session_key=session_key, suppliers=suppliers)
         else:
             return redirect(url_for("login"))
-    except KeyError:
-        return redirect(url_for("login"))
-
-
-@app.route("/<company>/<email>/<username>/<session_key>/trialBalance", methods=["POST", "GET"])
-def trialBalance(company, email, username, session_key):
-    try:
-        if session[email] == session_key:
-            accounts = ChartOfAccounts.query.filter_by(company=company).all()
-
-            return render_template("trialBalance.html", company=company, accounts=accounts)
     except KeyError:
         return redirect(url_for("login"))
 
@@ -538,39 +530,104 @@ def journal(company, email, username, session_key):
 @app.route("/<company>/<email>/<username>/<session_key>/changePassword", methods=["POST", "GET"])
 def changePassword(company, email, username, session_key):
 
-    if request.method == "POST":
-        user_email = request.form["user_email"]
-        old_password = request.form["old_password"]
-        new_password = request.form["new_password"]
-        new_password2 = request.form["new_password2"]
-        if new_password != new_password2:
-            return render_template("changePassword.html", company=company, email=email, message="These passwords do not match. Please try again with matching passwords")
-        else:
-            user = Users.query.filter_by(
-                company=company, email=user_email).first()
-            if user.password == old_password:
-                user.password = new_password
-                db.session.commit()
-            else:
-                return render_template("changePassword.html", company=company, email=email, message="This password does not match the email. No passwords have been changed")
+    try:
+        if session[email] == session_key:
+            if request.method == "POST":
+                user_email = request.form["user_email"]
+                old_password = request.form["old_password"]
+                new_password = request.form["new_password"]
+                new_password2 = request.form["new_password2"]
+                if new_password != new_password2:
+                    return render_template("changePassword.html", company=company, email=email, message="These passwords do not match. Please try again with matching passwords")
+                else:
+                    user = Users.query.filter_by(
+                        company=company, email=user_email).first()
+                    if user.password == old_password:
+                        user.password = new_password
+                        db.session.commit()
+                    else:
+                        return render_template("changePassword.html", company=company, email=email, message="This password does not match the email. No passwords have been changed")
 
-        return render_template("changePassword.html", company=company, email=email, message="Your password has been changed")
-    return render_template("changePassword.html", company=company, email=email, message="")
+                return render_template("changePassword.html", company=company, email=email, message="Your password has been changed")
+            return render_template("changePassword.html", company=company, email=email, message="")
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
+
+
+@app.route("/<company>/<email>/<username>/<session_key>/trialBalance", methods=["POST", "GET"])
+def trialBalance(company, email, username, session_key):
+    try:
+        if session[email] == session_key:
+            accounts = ChartOfAccounts.query.filter_by(company=company).all()
+
+            return render_template("trialBalance.html", company=company, accounts=accounts)
+    except KeyError:
+        return redirect(url_for("login"))
 
 
 @app.route("/<company>/<email>/<username>/<session_key>/balanceSheet", methods=["POST", "GET"])
 def balanceSheet(company, email, username, session_key):
-    data = ChartOfAccounts.query.filter_by(company=company).all()
-    totalAssets= 0
-    totalLiabilities = 0
-    for account in data:
-        if account.nominal < 60000:
-            pass
-        elif account.nominal < 70000:
-            totalAssets += account.balance
+
+    try:
+        if session[email] == session_key:
+            data = ChartOfAccounts.query.filter_by(company=company).all()
+            totalAssets = 0
+            totalLiabilities = 0
+            for account in data:
+                if account.nominal < 60000:
+                    pass
+                elif account.nominal < 70000:
+                    totalAssets += account.balance
+                else:
+                    totalLiabilities -= account.balance
+            return render_template("balanceSheet.html", company=company, data=data, totalAssets=totalAssets, totalLiabilities=totalLiabilities)
         else:
-            totalLiabilities -= account.balance
-    return render_template("balanceSheet.html", company=company, data=data, totalAssets=totalAssets, totalLiabilities=totalLiabilities)
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
+
+
+@app.route("/<company>/<email>/<username>/<session_key>/profitAndLoss", methods=["POST", "GET"])
+def profitAndLoss(company, email, username, session_key):
+    try:
+        if 1 == 1:
+
+            company_data = db.session.query(Companies).filter(
+                Companies.company == company).first()
+            current_year = company_data.accounting_year
+            current_period = company_data.accounting_period
+
+
+            accounts = db.session.query(ChartOfAccounts).filter(ChartOfAccounts.company == company).filter(
+                ChartOfAccounts.nominal < 60000)
+            
+            data = {}
+
+
+            for account in accounts:
+
+                monthly_balance = 0
+                for invoice in db.session.query(SalesInvoices).filter(SalesInvoices.company==company).filter(SalesInvoices.accounting_period==current_period).filter(SalesInvoices.accounting_year==current_year).filter(SalesInvoices.nominal_code==account.nominal):
+                    monthly_balance += invoice.net_value
+                for invoice in db.session.query(PurchaseInvoices).filter(PurchaseInvoices.company==company).filter(PurchaseInvoices.accounting_period==current_period).filter(PurchaseInvoices.accounting_year==current_year).filter(PurchaseInvoices.nominal_code==account.nominal):
+                    monthly_balance += invoice.net_value
+
+                ytd_balance = 0
+                for invoice in db.session.query(SalesInvoices).filter(SalesInvoices.company==company).filter(SalesInvoices.accounting_year==current_year).filter(SalesInvoices.nominal_code==account.nominal):
+                    ytd_balance += invoice.net_value
+                for invoice in db.session.query(PurchaseInvoices).filter(PurchaseInvoices.company==company).filter(PurchaseInvoices.accounting_year==current_year).filter(PurchaseInvoices.nominal_code==account.nominal):
+                    ytd_balance += invoice.net_value
+
+
+                data[account.account_name] = [monthly_balance, ytd_balance]
+            print(data)
+            return render_template("profitAndLoss.html", company=company, data=data)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
 
 
 if __name__ == "__main__":
