@@ -541,50 +541,66 @@ def journal(company, email, username, session_key):
 @app.route("/<company>/<email>/<username>/<session_key>/changePassword", methods=["POST", "GET"])
 def changePassword(company, email, username, session_key):
 
-    if request.method == "POST":
-        user_email = request.form["user_email"]
-        old_password = request.form["old_password"]
-        new_password = request.form["new_password"]
-        new_password2 = request.form["new_password2"]
-        if new_password != new_password2:
-            return render_template("changePassword.html", company=company, email=email, message="These passwords do not match. Please try again with matching passwords")
+    try:
+        if session[email] == session_key:
+            if request.method == "POST":
+                user_email = request.form["user_email"]
+                old_password = request.form["old_password"]
+                new_password = request.form["new_password"]
+                new_password2 = request.form["new_password2"]
+                if new_password != new_password2:
+                    return render_template("changePassword.html", company=company, email=email, message="These passwords do not match. Please try again with matching passwords")
+                else:
+                    user = Users.query.filter_by(
+                        company=company, email=user_email).first()
+                    if user.password == old_password:
+                        user.password = new_password
+                        db.session.commit()
+                    else:
+                        return render_template("changePassword.html", company=company, email=email, message="This password does not match the email. No passwords have been changed")
+
+                return render_template("changePassword.html", company=company, email=email, message="Your password has been changed")
+            return render_template("changePassword.html", company=company, email=email, message="")
         else:
-            user = Users.query.filter_by(
-                company=company, email=user_email).first()
-            if user.password == old_password:
-                user.password = new_password
-                db.session.commit()
-            else:
-                return render_template("changePassword.html", company=company, email=email, message="This password does not match the email. No passwords have been changed")
-
-        return render_template("changePassword.html", company=company, email=email, message="Your password has been changed")
-    return render_template("changePassword.html", company=company, email=email, message="")
-
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
 
 @app.route("/<company>/<email>/<username>/<session_key>/balanceSheet", methods=["POST", "GET"])
 def balanceSheet(company, email, username, session_key):
-    data = ChartOfAccounts.query.filter_by(company=company).all()
-    totalAssets = 0
-    totalLiabilities = 0
-    for account in data:
-        if account.nominal < 60000:
-            pass
-        elif account.nominal < 70000:
-            totalAssets += account.balance
+    
+    try:
+        if session[email] == session_key:
+            data = ChartOfAccounts.query.filter_by(company=company).all()
+            totalAssets = 0
+            totalLiabilities = 0
+            for account in data:
+                if account.nominal < 60000:
+                    pass
+                elif account.nominal < 70000:
+                    totalAssets += account.balance
+                else:
+                    totalLiabilities -= account.balance
+            return render_template("balanceSheet.html", company=company, data=data, totalAssets=totalAssets, totalLiabilities=totalLiabilities)
         else:
-            totalLiabilities -= account.balance
-    return render_template("balanceSheet.html", company=company, data=data, totalAssets=totalAssets, totalLiabilities=totalLiabilities)
-
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
 
 @app.route("/<company>/<email>/<username>/<session_key>/profitAndLoss", methods=["POST", "GET"])
 def profitAndLoss(company, email, username, session_key):
-    sales_invoices = SalesInvoices.query.filter_by(company=company).all()
-    purchase_invoices = SalesInvoices.query.filter_by(company=company).all()
-    journals = Journals.query.filter_by(company=company).all()
-    return render_template("profitAndLoss.html", company=company,
-                           sales_invoices=sales_invoices, purchase_invoices=purchase_invoices,
-                           journals=journals)
-
+    try:
+        if session[email] == session_key:
+            sales_invoices = SalesInvoices.query.filter_by(company=company).all()
+            purchase_invoices = SalesInvoices.query.filter_by(company=company).all()
+            journals = Journals.query.filter_by(company=company).all()
+            return render_template("profitAndLoss.html", company=company,
+                                sales_invoices=sales_invoices, purchase_invoices=purchase_invoices,
+                                journals=journals)
+        else:
+            return redirect(url_for("login"))
+    except KeyError:
+        return redirect(url_for("login"))
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
