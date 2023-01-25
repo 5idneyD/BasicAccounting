@@ -155,7 +155,7 @@ def login():
             if user.password == password:
                 session[email] = os.urandom(12).hex()
                 return redirect(url_for("dashboard", company=user.company,
-                                            email=email, username=user.username, session_key=session[email]))
+                                        email=email, username=user.username, session_key=session[email]))
 
     return render_template("login.html")
 
@@ -182,13 +182,15 @@ def signup():
         return redirect(url_for("admin", company=company_name, email=company_email, username=company_email, session_key=session[company_email]))
     return render_template("signup.html")
 
+
 @app.route("/<company>/<email>/<username>/<session_key>/admin", methods=["POST", "GET"])
 def admin(company, email, username, session_key):
 
     company_data = Companies.query.filter_by(company=company).first()
     accounting_year = company_data.accounting_year
     accounting_period = company_data.accounting_period
-    permission_level = Users.query.filter_by(company=company, email=email).first().admin
+    permission_level = Users.query.filter_by(
+        company=company, email=email).first().admin
 
     try:
         if session[email] == session_key:
@@ -234,7 +236,8 @@ def admin(company, email, username, session_key):
                         company_data.accounting_period = new_period
 
                     db.session.commit()
-                    company_data = Companies.query.filter_by(company=company).first()
+                    company_data = Companies.query.filter_by(
+                        company=company).first()
                     accounting_year = company_data.accounting_year
                     accounting_period = company_data.accounting_period
                     return render_template("admin.html", company=company, email=email, admin=permission_level, accounting_year=accounting_year, accounting_period=accounting_period)
@@ -356,9 +359,9 @@ def addSalesInvoice(company, email, username, session_key):
         if session[email] == session_key:
             customers = Customers.query.filter_by(company=company).all()
             invoices = SalesInvoices.query.filter_by(company=company).all()
-            company = Companies.query.filter_by(company=company).first()
-            accounting_year = company.accounting_year
-            accounting_period = company.accounting_period
+            company_data = Companies.query.filter_by(company=company).first()
+            accounting_year = company_data.accounting_year
+            accounting_period = company_data.accounting_period
             references = []
             for invoice in invoices:
                 references.append(str(invoice.reference))
@@ -406,9 +409,9 @@ def addPurchaseInvoice(company, email, username, session_key):
     try:
         if session[email] == session_key:
             suppliers = Suppliers.query.filter_by(company=company).all()
-            company = Companies.query.filter_by(company=company).first()
-            accounting_year = company.accounting_year
-            accounting_period = company.accounting_period
+            company_data = Companies.query.filter_by(company=company).first()
+            accounting_year = company_data.accounting_year
+            accounting_period = company_data.accounting_period
 
             if request.method == "POST":
                 invoice_number = request.form['invoice_number']
@@ -561,7 +564,7 @@ def changePassword(company, email, username, session_key):
 @app.route("/<company>/<email>/<username>/<session_key>/balanceSheet", methods=["POST", "GET"])
 def balanceSheet(company, email, username, session_key):
     data = ChartOfAccounts.query.filter_by(company=company).all()
-    totalAssets= 0
+    totalAssets = 0
     totalLiabilities = 0
     for account in data:
         if account.nominal < 60000:
@@ -571,6 +574,16 @@ def balanceSheet(company, email, username, session_key):
         else:
             totalLiabilities -= account.balance
     return render_template("balanceSheet.html", company=company, data=data, totalAssets=totalAssets, totalLiabilities=totalLiabilities)
+
+
+@app.route("/<company>/<email>/<username>/<session_key>/profitAndLoss", methods=["POST", "GET"])
+def profitAndLoss(company, email, username, session_key):
+    sales_invoices = SalesInvoices.query.filter_by(company=company).all()
+    purchase_invoices = SalesInvoices.query.filter_by(company=company).all()
+    journals = Journals.query.filter_by(company=company).all()
+    return render_template("profitAndLoss.html", company=company,
+                           sales_invoices=sales_invoices, purchase_invoices=purchase_invoices,
+                           journals=journals)
 
 
 if __name__ == "__main__":
