@@ -447,17 +447,6 @@ def addPurchaseInvoice(company, email, username, session_key):
         return redirect(url_for("login"))
 
 
-@app.route("/<company>/<email>/<username>/<session_key>/trialBalance", methods=["POST", "GET"])
-def trialBalance(company, email, username, session_key):
-    try:
-        if session[email] == session_key:
-            accounts = ChartOfAccounts.query.filter_by(company=company).all()
-
-            return render_template("trialBalance.html", company=company, accounts=accounts)
-    except KeyError:
-        return redirect(url_for("login"))
-
-
 @app.route("/<company>/<email>/<username>/<session_key>/viewSalesInvoices", methods=["POST", "GET"])
 def viewSalesInvoices(company, email, username, session_key):
     try:
@@ -566,9 +555,21 @@ def changePassword(company, email, username, session_key):
     except KeyError:
         return redirect(url_for("login"))
 
+
+@app.route("/<company>/<email>/<username>/<session_key>/trialBalance", methods=["POST", "GET"])
+def trialBalance(company, email, username, session_key):
+    try:
+        if session[email] == session_key:
+            accounts = ChartOfAccounts.query.filter_by(company=company).all()
+
+            return render_template("trialBalance.html", company=company, accounts=accounts)
+    except KeyError:
+        return redirect(url_for("login"))
+
+
 @app.route("/<company>/<email>/<username>/<session_key>/balanceSheet", methods=["POST", "GET"])
 def balanceSheet(company, email, username, session_key):
-    
+
     try:
         if session[email] == session_key:
             data = ChartOfAccounts.query.filter_by(company=company).all()
@@ -587,20 +588,47 @@ def balanceSheet(company, email, username, session_key):
     except KeyError:
         return redirect(url_for("login"))
 
+
 @app.route("/<company>/<email>/<username>/<session_key>/profitAndLoss", methods=["POST", "GET"])
 def profitAndLoss(company, email, username, session_key):
     try:
-        if session[email] == session_key:
-            sales_invoices = SalesInvoices.query.filter_by(company=company).all()
-            purchase_invoices = SalesInvoices.query.filter_by(company=company).all()
-            journals = Journals.query.filter_by(company=company).all()
-            return render_template("profitAndLoss.html", company=company,
-                                sales_invoices=sales_invoices, purchase_invoices=purchase_invoices,
-                                journals=journals)
+        if 1 == 1:
+
+            company_data = db.session.query(Companies).filter(
+                Companies.company == company).first()
+            current_year = company_data.accounting_year
+            current_period = company_data.accounting_period
+
+
+            accounts = db.session.query(ChartOfAccounts).filter(ChartOfAccounts.company == company).filter(
+                ChartOfAccounts.nominal < 60000)
+            
+            data = {}
+
+
+            for account in accounts:
+
+                monthly_balance = 0
+                for invoice in db.session.query(SalesInvoices).filter(SalesInvoices.company==company).filter(SalesInvoices.accounting_period==current_period).filter(SalesInvoices.accounting_year==current_year).filter(SalesInvoices.nominal_code==account.nominal):
+                    monthly_balance += invoice.net_value
+                for invoice in db.session.query(PurchaseInvoices).filter(PurchaseInvoices.company==company).filter(PurchaseInvoices.accounting_period==current_period).filter(PurchaseInvoices.accounting_year==current_year).filter(PurchaseInvoices.nominal_code==account.nominal):
+                    monthly_balance += invoice.net_value
+
+                ytd_balance = 0
+                for invoice in db.session.query(SalesInvoices).filter(SalesInvoices.company==company).filter(SalesInvoices.accounting_year==current_year).filter(SalesInvoices.nominal_code==account.nominal):
+                    ytd_balance += invoice.net_value
+                for invoice in db.session.query(PurchaseInvoices).filter(PurchaseInvoices.company==company).filter(PurchaseInvoices.accounting_year==current_year).filter(PurchaseInvoices.nominal_code==account.nominal):
+                    ytd_balance += invoice.net_value
+
+
+                data[account.account_name] = [monthly_balance, ytd_balance]
+            print(data)
+            return render_template("profitAndLoss.html", company=company, data=data)
         else:
             return redirect(url_for("login"))
     except KeyError:
         return redirect(url_for("login"))
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
