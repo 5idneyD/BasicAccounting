@@ -22,7 +22,7 @@
 			<h1><u>{{company}}</u></h1>
 			<h2>Admin</h2>
 		</div>
-		{% if admin==3 %}
+		{% if admin==3 or admin=="3" %}
 		<form id="form" method="post">
 			<div class="container">
 				<div class="row align-items-center justify-content-center">
@@ -72,7 +72,7 @@
 			</div>
 			<div id="body" class="d-flex flex-column mt-5 min-vw-100"></div>
 		</form>
-		{% elif admin==2 %}
+		{% elif admin==2 or admin=="2" %}
 		<form id="form" method="post">
 			<div class="container">
 				<div class="row align-items-center justify-content-center">

@@ -109,6 +109,7 @@ class PurchaseInvoices(db.Model):
 class Journals(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     company = db.Column(db.String(40))
+    journal_number = db.Column(db.Integer)
     journal_date = db.Column(db.String(40))
     journal_description = db.Column(db.String(40))
     nominal_code = db.Column(db.Integer)
@@ -119,6 +120,28 @@ class Journals(db.Model):
     posted_on = db.Column(db.String(40))
     accounting_year = db.Column(db.String(4))
     accounting_period = db.Column(db.String(4))
+
+
+class NominalTransactions(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    company = db.Column(db.String(40))
+    transaction_type = db.Column(db.String(40))
+    client_code = db.Column(db.String(40))
+    transaction_number = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.String(40))
+    description = db.Column(db.String(40))
+    nominal_code = db.Column(db.Integer)
+    description = db.Column(db.String(40), nullable=False)
+    debit = db.Column(db.Float)
+    credit = db.Column(db.Float)
+    net_value = db.Column(db.Float)
+    vat_value = db.Column(db.Float)
+    total_value = db.Column(db.Float)
+    posted_by = db.Column(db.String(40))
+    posted_on = db.Column(db.String(40))
+    accounting_year = db.Column(db.String(4))
+    accounting_period = db.Column(db.String(4))
+    reference = db.Column(db.String(50))
 
 
 with app.app_context():
@@ -174,12 +197,12 @@ def signup():
             company=company_name, admin_email=company_email, admin_password=company_password, accounting_year=accounting_year, accounting_period=accounting_period)
         db.session.add(new_company)
         new_admin = Users(company=company_name, email=company_email, username=company_email,
-                          password=company_password, admin=3)
+                          password=company_password, admin="3")
         db.session.add(new_admin)
         db.session.commit()
 
         session[company_email] = os.urandom(12).hex()
-        return redirect(url_for("admin", company=company_name, email=company_email, username=company_email, session_key=session[company_email]))
+        return redirect(url_for("admin", company=company_name, email=company_email, username="Admin", session_key=session[company_email]))
     return render_template("signup.html")
 
 
@@ -388,8 +411,18 @@ def addSalesInvoice(company, email, username, session_key):
                                                 date_posted=dt.datetime.today().strftime("%Y-%m-%d"),
                                                 user_posted=username, reference=reference,
                                                 accounting_year=accounting_year, accounting_period=accounting_period)
-                    db.session.add(new_invoice)
 
+                    new_nominal_transaction = NominalTransactions(company=company, transaction_type="sales_invoice",
+                                                                  client_code=customer_code,
+                                                                  transaction_number=invoice_number, date=invoice_date,
+                                                                  nominal_code=nominal_code, description=description,
+                                                                  net_value=net_value, vat_value=vat, total_value=total_value,
+                                                                  posted_on=dt.datetime.today().strftime("%Y-%m-%d"),
+                                                                  posted_by=username, reference=reference,
+                                                                  accounting_year=accounting_year, accounting_period=accounting_period)
+
+                    db.session.add(new_invoice)
+                    db.session.add(new_nominal_transaction)
                     account = ChartOfAccounts.query.filter_by(
                         company=company, nominal=nominal_code).first()
                     account.balance = account.balance-float(net_value)
@@ -433,8 +466,18 @@ def addPurchaseInvoice(company, email, username, session_key):
                                                    net_value=net_value, vat_value=vat, total_value=total_value,
                                                    date_posted=dt.datetime.today().strftime("%Y-%m-%d"), user_posted=username,
                                                    accounting_year=accounting_year, accounting_period=accounting_period)
+                    
+                    new_nominal_transaction = NominalTransactions(company=company, transaction_type="purchase_invoice",
+                                                                  client_code=supplier_code,
+                                                                  transaction_number=invoice_number, date=invoice_date,
+                                                                  nominal_code=nominal_code, description=description,
+                                                                  net_value=net_value, vat_value=vat, total_value=total_value,
+                                                                  posted_on=dt.datetime.today().strftime("%Y-%m-%d"),
+                                                                  posted_by=username, reference="",
+                                                                  accounting_year=accounting_year, accounting_period=accounting_period)
+                   
                     db.session.add(new_invoice)
-
+                    db.session.add(new_nominal_transaction)
                     account = ChartOfAccounts.query.filter_by(
                         company=company, nominal=nominal_code).first()
                     account.balance = account.balance+float(net_value)
@@ -509,6 +552,19 @@ def journal(company, email, username, session_key):
                                                journal_description=journal_description,
                                                nominal_code=nominal_code, description=description,
                                                debit=debit, credit=credit, posted_by=username)
+                        
+                        
+                        new_nominal_transaction = NominalTransactions(company=company, transaction_type="journal",
+                                                                  client_code="Journal",
+                                                                  transaction_number=invoice_number, date=invoice_date,
+                                                                  nominal_code=nominal_code, description=description,
+                                                                  net_value=net_value, vat_value=vat, total_value=total_value,
+                                                                  posted_on=dt.datetime.today().strftime("%Y-%m-%d"),
+                                                                  posted_by=username, reference="",
+                                                                  accounting_year=accounting_year, accounting_period=accounting_period)
+                                         
+                        
+                        
                         db.session.add(new_journal)
 
                         account = ChartOfAccounts.query.filter_by(
@@ -599,30 +655,29 @@ def profitAndLoss(company, email, username, session_key):
             current_year = company_data.accounting_year
             current_period = company_data.accounting_period
 
-
             accounts = db.session.query(ChartOfAccounts).filter(ChartOfAccounts.company == company).filter(
                 ChartOfAccounts.nominal < 60000)
-            
+
             data = {}
 
-
             for account in accounts:
-
                 monthly_balance = 0
-                for invoice in db.session.query(SalesInvoices).filter(SalesInvoices.company==company).filter(SalesInvoices.accounting_period==current_period).filter(SalesInvoices.accounting_year==current_year).filter(SalesInvoices.nominal_code==account.nominal):
-                    monthly_balance += invoice.net_value
-                for invoice in db.session.query(PurchaseInvoices).filter(PurchaseInvoices.company==company).filter(PurchaseInvoices.accounting_period==current_period).filter(PurchaseInvoices.accounting_year==current_year).filter(PurchaseInvoices.nominal_code==account.nominal):
-                    monthly_balance += invoice.net_value
-
                 ytd_balance = 0
-                for invoice in db.session.query(SalesInvoices).filter(SalesInvoices.company==company).filter(SalesInvoices.accounting_year==current_year).filter(SalesInvoices.nominal_code==account.nominal):
-                    ytd_balance += invoice.net_value
-                for invoice in db.session.query(PurchaseInvoices).filter(PurchaseInvoices.company==company).filter(PurchaseInvoices.accounting_year==current_year).filter(PurchaseInvoices.nominal_code==account.nominal):
-                    ytd_balance += invoice.net_value
+                transactions = db.session.query(NominalTransactions).filter(NominalTransactions.company == company).filter(NominalTransactions.nominal_code==account.nominal).filter(NominalTransactions.accounting_year==current_year)
+
+                for transaction in transactions:
+                    if transaction.accounting_period == current_period:
+                        monthly_balance += transaction.total_value
+                    else:
+                        pass
+                    ytd_balance += transaction.total_value
+
+                print(account.account_name, monthly_balance, ytd_balance)
 
 
-                data[account.account_name] = [monthly_balance, ytd_balance]
-            print(data)
+                data[account.account_name] = [
+                    monthly_balance, ytd_balance, account.nominal]
+
             return render_template("profitAndLoss.html", company=company, data=data)
         else:
             return redirect(url_for("login"))

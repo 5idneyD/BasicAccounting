@@ -32,7 +32,7 @@
 							<th>YTD</th>
 						</tr>
 						{% for account, value in data.items() %}
-						<tr>
+						<tr id="{{value[2]}}">
 							<td>{{account}}</td>
 							<td>{{value[0]}}</td>
 							<td>{{value[1]}}</td>
