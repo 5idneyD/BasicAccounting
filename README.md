@@ -42,3 +42,4 @@ Potential Features In The Future
 - Budget
 - Filter/Sort Reports
 - Export reports to excel/csv files
+- Change colours for your personal account
