@@ -30,10 +30,11 @@ I hope for it to become a professionally used application that anyone can access
 - Different permissions for different users ✔️
 - Email invoices to customers once posted
 - Budget
-- Filter/Sort Reports
+- Filter/Sort Reports !important
 - Export reports to excel/csv files
 - Change colours for your personal account
-- Nominal ransactions Page ✔️
+- Nominal transactions page ✔️
+- Batch Journals for reversal
 
 ## Tech Stack Being Used:
 - SQLAlchemy  <strike>(SQLite3)</strike>   (MySQL) 

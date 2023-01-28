@@ -263,11 +263,11 @@ def admin(company, email, username, session_key):
                         company=company).first()
                     accounting_year = company_data.accounting_year
                     accounting_period = company_data.accounting_period
-                    return render_template("admin.html", company=company, email=email, admin=permission_level, accounting_year=accounting_year, accounting_period=accounting_period)
+                    return render_template("adminV2.html", company=company, email=email, admin=permission_level, accounting_year=accounting_year, accounting_period=accounting_period)
                 else:
                     pass
 
-            return render_template("admin.html", company=company, email=email, admin=permission_level, accounting_year=accounting_year, accounting_period=accounting_period)
+            return render_template("adminV2.html", company=company, email=email, admin=permission_level, accounting_year=accounting_year, accounting_period=accounting_period)
 
     except KeyError:
         return redirect(url_for("login"))

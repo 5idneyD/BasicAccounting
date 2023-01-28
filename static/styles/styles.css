@@ -1,7 +1,7 @@
 :root {
-    --dark: #4d1514;
-    --light: #bcc2c4;
-    --tableBorder: #262220;
+    --dark: #3D5B59;
+    --light: #B5E5CF;
+    --tableBorder: #65463E;
 }
 
 #heading {
@@ -25,7 +25,7 @@ button {
 
 button:hover {
     background: var(--light);
-    color: var(--dark);
+    color: var(--light);
     border-color: var(--dark);
 }
 
@@ -185,6 +185,9 @@ button:disabled:hover,
 button#submitButton[type="button"] {
     color: black;
     background-color: var(--tableBorder);
+}
+button[data-selected="1"]{
+    background-color: var(--dark);
 }
 
 @keyframes error {
