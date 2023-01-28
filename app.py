@@ -141,7 +141,7 @@ class NominalTransactions(db.Model):
     posted_on = db.Column(db.String(40))
     accounting_year = db.Column(db.String(4))
     accounting_period = db.Column(db.String(4))
-    reference = db.Column(db.String(50))
+    reference = db.Column(db.String(70))
 
 
 with app.app_context():
@@ -381,7 +381,8 @@ def addSalesInvoice(company, email, username, session_key):
     try:
         if session[email] == session_key:
             customers = Customers.query.filter_by(company=company).all()
-            invoices = SalesInvoices.query.filter_by(company=company).all()
+            invoices = NominalTransactions.query.filter_by(
+                company=company, transaction_type="sales_invoice").all()
             company_data = Companies.query.filter_by(company=company).first()
             accounting_year = company_data.accounting_year
             accounting_period = company_data.accounting_period
@@ -428,6 +429,8 @@ def addSalesInvoice(company, email, username, session_key):
                     account.balance = account.balance-float(net_value)
                 db.session.commit()
 
+                references.append(reference)
+
                 return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers, references=references)
             return render_template("addSalesInvoice.html", company=company, email=email, username=username, session_key=session_key, customers=customers, references=references)
         else:
@@ -466,7 +469,7 @@ def addPurchaseInvoice(company, email, username, session_key):
                                                    net_value=net_value, vat_value=vat, total_value=total_value,
                                                    date_posted=dt.datetime.today().strftime("%Y-%m-%d"), user_posted=username,
                                                    accounting_year=accounting_year, accounting_period=accounting_period)
-                    
+
                     new_nominal_transaction = NominalTransactions(company=company, transaction_type="purchase_invoice",
                                                                   client_code=supplier_code,
                                                                   transaction_number=invoice_number, date=invoice_date,
@@ -475,7 +478,7 @@ def addPurchaseInvoice(company, email, username, session_key):
                                                                   posted_on=dt.datetime.today().strftime("%Y-%m-%d"),
                                                                   posted_by=username, reference="",
                                                                   accounting_year=accounting_year, accounting_period=accounting_period)
-                   
+
                     db.session.add(new_invoice)
                     db.session.add(new_nominal_transaction)
                     account = ChartOfAccounts.query.filter_by(
@@ -520,13 +523,28 @@ def viewPurchaseInvoices(company, email, username, session_key):
 def journal(company, email, username, session_key):
     try:
         if session[email] == session_key:
+
+            journals = NominalTransactions.query.filter_by(
+                company=company, transaction_type="journal").all()
+            references = []
+            for journal in journals:
+                references.append(int(journal.reference.split("_")[-1]))
+            next_journal_number = max(references) + 1
+            print(references)
+
             if request.method == "POST":
                 journal_date = str(request.form['journalDate'])
+                journal_number = str(request.form['journalNumber'])
                 journal_description = request.form["journalDescription"]
                 debitTotal = request.form["debitTotal"]
                 creditTotal = request.form["creditTotal"]
                 number_of_rows = request.form["number_of_rows"]
-                print(int(number_of_rows) + 1)
+                company_data = Companies.query.filter_by(
+                    company=company).first()
+                accounting_year = company_data.accounting_year
+                accounting_period = company_data.accounting_period
+                journal_reference = "journal_" + journal_number
+                print(journal_reference)
 
                 for i in range(1, int(number_of_rows)+1):
                     nominal_code = request.form[str(i) + "_nominal_code"]
@@ -548,24 +566,22 @@ def journal(company, email, username, session_key):
                     if debit == 0.00 and credit == 0.00:
                         pass
                     else:
-                        new_journal = Journals(company=company, journal_date=journal_date,
-                                               journal_description=journal_description,
-                                               nominal_code=nominal_code, description=description,
-                                               debit=debit, credit=credit, posted_by=username)
-                        
-                        
+                        # new_journal = Journals(company=company, journal_date=journal_date,
+                        #                        journal_description=journal_description,
+                        #                        nominal_code=nominal_code, description=description,
+                        #                        debit=debit, credit=credit, posted_by=username)
+
                         new_nominal_transaction = NominalTransactions(company=company, transaction_type="journal",
-                                                                  client_code="Journal",
-                                                                  transaction_number=invoice_number, date=invoice_date,
-                                                                  nominal_code=nominal_code, description=description,
-                                                                  net_value=net_value, vat_value=vat, total_value=total_value,
-                                                                  posted_on=dt.datetime.today().strftime("%Y-%m-%d"),
-                                                                  posted_by=username, reference="",
-                                                                  accounting_year=accounting_year, accounting_period=accounting_period)
-                                         
-                        
-                        
-                        db.session.add(new_journal)
+                                                                      client_code="Journal",
+                                                                      transaction_number=journal_number, date=journal_date,
+                                                                      nominal_code=nominal_code, description=description, debit=debit, credit=credit,
+                                                                      net_value=debit-credit, vat_value=0, total_value=debit-credit,
+                                                                      posted_on=dt.datetime.today().strftime("%Y-%m-%d"),
+                                                                      posted_by=username, reference=journal_reference,
+                                                                      accounting_year=accounting_year, accounting_period=accounting_period)
+
+                        # db.session.add(new_journal)
+                        db.session.add(new_nominal_transaction)
 
                         account = ChartOfAccounts.query.filter_by(
                             company=company, nominal=nominal_code).first()
@@ -573,10 +589,11 @@ def journal(company, email, username, session_key):
                         account.balance -= credit
 
                 db.session.commit()
+                next_journal_number += 1
 
-                return render_template("journal.html", company=company)
+                return render_template("journal.html", company=company, next_journal_number=next_journal_number)
 
-            return render_template("journal.html", company=company)
+            return render_template("journal.html", company=company, next_journal_number=next_journal_number)
         else:
             return redirect(url_for("login"))
     except KeyError:
@@ -663,17 +680,17 @@ def profitAndLoss(company, email, username, session_key):
             for account in accounts:
                 monthly_balance = 0
                 ytd_balance = 0
-                transactions = db.session.query(NominalTransactions).filter(NominalTransactions.company == company).filter(NominalTransactions.nominal_code==account.nominal).filter(NominalTransactions.accounting_year==current_year)
+                transactions = db.session.query(NominalTransactions).filter(NominalTransactions.company == company).filter(
+                    NominalTransactions.nominal_code == account.nominal).filter(NominalTransactions.accounting_year == current_year)
 
                 for transaction in transactions:
                     if transaction.accounting_period == current_period:
-                        monthly_balance += transaction.total_value
+                        monthly_balance += transaction.net_value
                     else:
                         pass
-                    ytd_balance += transaction.total_value
+                    ytd_balance += transaction.net_value
 
-                print(account.account_name, monthly_balance, ytd_balance)
-
+                print(account.account_name, monthly_balance, ytd_balance, account.nominal)
 
                 data[account.account_name] = [
                     monthly_balance, ytd_balance, account.nominal]
