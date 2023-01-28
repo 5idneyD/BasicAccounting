@@ -152,7 +152,13 @@ table#bodyTable tr td input {
 table#journalHead {
     width: 80%;
 }
-
+table#pnlSettings{
+    width: 20%;
+    height: 10%;
+    margin: 0;
+    margin-top: 2%;
+    margin-left: 10%;
+}
 tr {
     border: 1px solid var(--tableBorder);
 }

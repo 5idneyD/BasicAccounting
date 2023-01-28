@@ -544,7 +544,6 @@ def journal(company, email, username, session_key):
                 accounting_period = company_data.accounting_period
                 journal_reference = "journal_" + journal_number
 
-
                 for i in range(1, int(number_of_rows)+1):
                     nominal_code = request.form[str(i) + "_nominal_code"]
                     description = request.form[str(i) + "_description"]
@@ -564,11 +563,6 @@ def journal(company, email, username, session_key):
                     if debit == 0.00 and credit == 0.00:
                         pass
                     else:
-                        # new_journal = Journals(company=company, journal_date=journal_date,
-                        #                        journal_description=journal_description,
-                        #                        nominal_code=nominal_code, description=description,
-                        #                        debit=debit, credit=credit, posted_by=username)
-
                         new_nominal_transaction = NominalTransactions(company=company, transaction_type="journal",
                                                                       client_code="Journal",
                                                                       transaction_number=journal_number, date=journal_date,
@@ -642,7 +636,7 @@ def trialBalance(company, email, username, session_key):
 def balanceSheet(company, email, username, session_key):
 
     try:
-        if 1 == 1:
+        if session[email] == session_key:
             company_data = db.session.query(Companies).filter(
                 Companies.company == company).first()
             current_year = company_data.accounting_year
@@ -666,7 +660,8 @@ def balanceSheet(company, email, username, session_key):
                         pass
                     ytd_balance += transaction.net_value
 
-                print(account.account_name, monthly_balance, ytd_balance, account.nominal)
+                print(account.account_name, monthly_balance,
+                      ytd_balance, account.nominal)
 
                 data[account.account_name] = [
                     monthly_balance, ytd_balance, account.nominal, account.account_name]
@@ -687,6 +682,10 @@ def profitAndLoss(company, email, username, session_key):
             current_year = company_data.accounting_year
             current_period = company_data.accounting_period
 
+            if request.method == "POST":
+                current_year = request.form["selected_year"]
+                current_period = request.form["selected_period"]
+
             accounts = db.session.query(ChartOfAccounts).filter(ChartOfAccounts.company == company).filter(
                 ChartOfAccounts.nominal < 60000)
 
@@ -696,24 +695,28 @@ def profitAndLoss(company, email, username, session_key):
                 monthly_balance = 0
                 ytd_balance = 0
                 transactions = db.session.query(NominalTransactions).filter(NominalTransactions.company == company).filter(
-                    NominalTransactions.nominal_code == account.nominal).filter(NominalTransactions.accounting_year == current_year)
+                    NominalTransactions.nominal_code == account.nominal).filter(NominalTransactions.accounting_year == current_year).filter(
+                        NominalTransactions.accounting_period <= current_period)
 
+                
                 for transaction in transactions:
                     if transaction.accounting_period == current_period:
-                        monthly_balance += transaction.net_value
+                        if transaction.transaction_type == "journal" and account.nominal < 20000:
+                            monthly_balance -= transaction.net_value
+                        else:
+                            monthly_balance += transaction.net_value
                     else:
                         pass
                     ytd_balance += transaction.net_value
 
-                print(account.account_name, monthly_balance, ytd_balance, account.nominal)
-
                 data[account.account_name] = [
                     monthly_balance, ytd_balance, account.nominal]
 
-            return render_template("profitAndLoss.html", company=company, data=data)
+            return render_template("profitAndLoss.html", company=company, data=data, accounting_year=current_year, accounting_period=current_period)
         else:
             return redirect(url_for("login"))
-    except KeyError:
+    except KeyError as e:
+        print(e)
         return redirect(url_for("login"))
 
 
