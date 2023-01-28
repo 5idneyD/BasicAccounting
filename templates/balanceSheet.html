@@ -32,49 +32,28 @@
 							<th>Debit</th>
 							<th>Credit</th>
 						</tr>
-						
-						{% for account in data %}
-							{% if account.nominal < 60000 %}
-								{% else %}
-								<tr>
-									<td>{{account.nominal}}</td>
-									<td>{{account.account_name}}</td>
-									{% if account.balance > 0.00 %}
-										<td>{{ account.balance }}</td>
-										<td></td>
-									{% elif account.balance < 0.00 %}
-										<td></td>
-										<td>{{ -account.balance }}</td>
-									{% else %}
-										<td></td>
-										<td></td>
-									{% endif %}
-								</tr>
-							{% endif %}
-						{% endfor %}
-						<tr>
-							<td></td>
-							<td>Total Assets</td>
-							<td>{{totalAssets}}</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td>Total Liabilities</td>
-							<td></td>
-							<td>{{totalLiabilities}}</td>
-						</tr>
 
-						<tr>
+						{% for key, value in data.items() %}
+						<tr id="{{value[2]}}" class="{{value[2]}} table_row">
+							<td>{{value[2]}}</td>
+							<td>{{value[3]}}</td>
+							{% if value[1]|float > 0.00 %}
+							<td>{{ value[1] }}</td>
 							<td></td>
-							<td>Net Assets</td>
-							{% if totalAssets - totalLiabilities > 0.00 %}
-							<td>{{totalAssets - totalLiabilities}}</td>
+							{% elif value[1]|float < 0.00 %}
 							<td></td>
+							<td>{{ -value[1] }}</td>
 							{% else %}
 							<td></td>
-							<td>{{totalLiabilities - totalAssets}}</td>
+							<td></td>
 							{% endif %}
+						</tr>
+						{% endfor %}
+						<tr id="netAssets" class="summaryRow">
+							<td></td>
+							<td>Net Assets</td>
+							<td></td>
+							<td></td>
 						</tr>
 					</table>
 				</div>
@@ -82,5 +61,6 @@
 		</div>
 		<script type="text/babel" src="{{ url_for('static', filename='react/navigation.jsx') }}"></script>
 		<script src="{{ url_for('static', filename='js/navDropdown.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/balanceSheet.js') }}"></script>
 	</body>
 </html>

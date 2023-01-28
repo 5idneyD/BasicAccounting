@@ -530,7 +530,6 @@ def journal(company, email, username, session_key):
             for journal in journals:
                 references.append(int(journal.reference.split("_")[-1]))
             next_journal_number = max(references) + 1
-            print(references)
 
             if request.method == "POST":
                 journal_date = str(request.form['journalDate'])
@@ -544,7 +543,7 @@ def journal(company, email, username, session_key):
                 accounting_year = company_data.accounting_year
                 accounting_period = company_data.accounting_period
                 journal_reference = "journal_" + journal_number
-                print(journal_reference)
+
 
                 for i in range(1, int(number_of_rows)+1):
                     nominal_code = request.form[str(i) + "_nominal_code"]
@@ -562,7 +561,6 @@ def journal(company, email, username, session_key):
                     else:
                         credit = float(credit)
 
-                    print(i, debit, credit)
                     if debit == 0.00 and credit == 0.00:
                         pass
                     else:
@@ -644,18 +642,35 @@ def trialBalance(company, email, username, session_key):
 def balanceSheet(company, email, username, session_key):
 
     try:
-        if session[email] == session_key:
-            data = ChartOfAccounts.query.filter_by(company=company).all()
-            totalAssets = 0
-            totalLiabilities = 0
-            for account in data:
-                if account.nominal < 60000:
-                    pass
-                elif account.nominal < 70000:
-                    totalAssets += account.balance
-                else:
-                    totalLiabilities -= account.balance
-            return render_template("balanceSheet.html", company=company, data=data, totalAssets=totalAssets, totalLiabilities=totalLiabilities)
+        if 1 == 1:
+            company_data = db.session.query(Companies).filter(
+                Companies.company == company).first()
+            current_year = company_data.accounting_year
+            current_period = company_data.accounting_period
+
+            accounts = db.session.query(ChartOfAccounts).filter(ChartOfAccounts.company == company).filter(
+                ChartOfAccounts.nominal >= 60000)
+
+            data = {}
+
+            for account in accounts:
+                monthly_balance = 0
+                ytd_balance = 0
+                transactions = db.session.query(NominalTransactions).filter(NominalTransactions.company == company).filter(
+                    NominalTransactions.nominal_code == account.nominal).filter(NominalTransactions.accounting_year == current_year)
+
+                for transaction in transactions:
+                    if transaction.accounting_period == current_period:
+                        monthly_balance += transaction.net_value
+                    else:
+                        pass
+                    ytd_balance += transaction.net_value
+
+                print(account.account_name, monthly_balance, ytd_balance, account.nominal)
+
+                data[account.account_name] = [
+                    monthly_balance, ytd_balance, account.nominal, account.account_name]
+            return render_template("balanceSheet.html", company=company, data=data)
         else:
             return redirect(url_for("login"))
     except KeyError:
@@ -665,7 +680,7 @@ def balanceSheet(company, email, username, session_key):
 @app.route("/<company>/<email>/<username>/<session_key>/profitAndLoss", methods=["POST", "GET"])
 def profitAndLoss(company, email, username, session_key):
     try:
-        if 1 == 1:
+        if session[email] == session_key:
 
             company_data = db.session.query(Companies).filter(
                 Companies.company == company).first()
