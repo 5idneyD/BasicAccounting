@@ -31,18 +31,25 @@
 							<th>Current Period</th>
 							<th>YTD</th>
 						</tr>
-						{% for account, value in data.items() %}
-						<tr>
+						{% for account, value in data.items() %} {% if value[2] < 20000 %}
+						<tr id="{{value[2]}}" class="{{value[2]}} table_row">
+							<td>{{account}}</td>
+							<td>{{value[0] * -1}}</td>
+							<td>{{value[1] * -1}}</td>
+						</tr>
+						{% else %}
+						<tr id="{{value[2]}}" class="{{value[2]}} table_row">
 							<td>{{account}}</td>
 							<td>{{value[0]}}</td>
 							<td>{{value[1]}}</td>
 						</tr>
-						{% endfor %}
+						{% endif %} {% endfor %}
 					</table>
 				</div>
 			</div>
 		</div>
 		<script type="text/babel" src="{{ url_for('static', filename='react/navigation.jsx') }}"></script>
 		<script src="{{ url_for('static', filename='js/navDropdown.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/pnl.js') }}"></script>
 	</body>
 </html>

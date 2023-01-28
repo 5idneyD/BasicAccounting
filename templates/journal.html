@@ -4,6 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+		<meta id="references" data-references="{{next_journal_number}}" data-company="{{company}}" />
 		<link
 			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
 			rel="stylesheet"
@@ -35,5 +36,6 @@
 		<script type="text/babel" src="{{ url_for('static', filename='react/navigation.jsx') }}"></script>
 		<script src="{{ url_for('static', filename='js/navDropdown.js') }}"></script>
 		<script type="text/babel" src="{{ url_for('static', filename='react/journal.jsx') }}"></script>
+		<!-- <script src="{{url_for('static', filename='js/defaultJournalNumber.js')}}"></script> -->
 	</body>
 </html>

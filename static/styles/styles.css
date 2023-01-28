@@ -209,3 +209,7 @@ div.changePassword {
     margin-left: 26vw;
     text-align: center;
 }
+
+.summaryRow {
+    font-weight: bold;
+}

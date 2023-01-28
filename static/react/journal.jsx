@@ -1,8 +1,14 @@
+var references = document.querySelector("#references").dataset.references;
+var new_number = Number(references);
+
+
 function Journal() {
 	const [debit, setDebit] = React.useState(0);
 	const [credit, setCredit] = React.useState(0);
 	const [count, setCount] = React.useState(1);
 	const [rows, setRows] = React.useState([<Row key="1" number="1" />]);
+	const [journalNumber, setJournalNumber] = React.useState(new_number);
+
 
 	function Row(props) {
 		return (
@@ -72,6 +78,12 @@ function Journal() {
 				{/* Table Head */}
 				<table className="" id="journalHead">
 					<tbody>
+						<tr>
+							<td>Journal Number</td>
+							<td>
+								<input type="journal" name="journalNumber" defaultValue={journalNumber} readOnly></input>
+							</td>
+						</tr>
 						<tr>
 							<td>Date</td>
 							<td>
