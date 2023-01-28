@@ -129,13 +129,13 @@ class NominalTransactions(db.Model):
     client_code = db.Column(db.String(40))
     transaction_number = db.Column(db.Integer, nullable=False)
     date = db.Column(db.String(40))
-    description = db.Column(db.String(40))
+    # description = db.Column(db.String(40))
     nominal_code = db.Column(db.Integer)
     description = db.Column(db.String(40), nullable=False)
     debit = db.Column(db.Float)
     credit = db.Column(db.Float)
     net_value = db.Column(db.Float)
-    vat_value = db.Column(db.Float)
+    vat_value = db.Column(db.Float, default=0.00)
     total_value = db.Column(db.Float)
     posted_by = db.Column(db.String(40))
     posted_on = db.Column(db.String(40))
@@ -707,6 +707,9 @@ def profitAndLoss(company, email, username, session_key):
                             monthly_balance += transaction.net_value
                     else:
                         pass
+
+                    if transaction.transaction_type == "journal" and account.nominal < 20000:
+                        ytd_balance -= transaction.net_value
                     ytd_balance += transaction.net_value
 
                 data[account.account_name] = [
@@ -718,6 +721,16 @@ def profitAndLoss(company, email, username, session_key):
     except KeyError as e:
         print(e)
         return redirect(url_for("login"))
+
+
+@app.route("/<company>/<email>/<username>/<session_key>/nominalTransactions", methods=["POST", "GET"])
+def nominalTransactions(company, email, username, session_key):
+
+    transactions = NominalTransactions.query.filter_by(company=company)
+
+
+    return render_template("nominalTransactions.html", company=company, transactions=transactions)
+
 
 
 if __name__ == "__main__":

@@ -46,7 +46,7 @@ document.addEventListener(
                     );
                     menu.dataset.expanded = "true";
                 } else if (menu.id == "financials") {
-                    menu.parentElement.style.height = "26vh";
+                    menu.parentElement.style.height = "30vh";
                     menu.insertAdjacentHTML(
                         "beforeend",
                         "<br class=" +
@@ -69,7 +69,11 @@ document.addEventListener(
                         e.target.id +
                         "Option><a class='menuOption " +
                         e.target.id +
-                        "Option' href='" + url + "/journal'>Post A Journal</a>",
+                        "Option' href='" + url + "/journal'>Post A Journal</a><br class=" +
+                        e.target.id +
+                        "Option><a class='menuOption " +
+                        e.target.id +
+                        "Option' href='" + url + "/nominalTransactions'>Nominal Transactions</a>",
                     );
                     menu.dataset.expanded = "true";
                 } else {
