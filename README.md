@@ -17,7 +17,7 @@ I hope for it to become a professionally used application that anyone can access
     - Chart Of Accounts ✔️
     - Trial Balance ✔️
     - Balance Sheet ✔️
-    - P&L
+    - P&L ✔️
 - Double Entry Journals ✔️
 - Periods ✔️
 - Change passwords ✔️
@@ -33,7 +33,7 @@ I hope for it to become a professionally used application that anyone can access
 - Filter/Sort Reports
 - Export reports to excel/csv files
 - Change colours for your personal account
-
+- Nominal ransactions Page ✔️
 
 ## Tech Stack Being Used:
 - SQLAlchemy  <strike>(SQLite3)</strike>   (MySQL) 
