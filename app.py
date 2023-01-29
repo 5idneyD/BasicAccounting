@@ -389,6 +389,8 @@ def addSalesInvoice(company, email, username, session_key):
             references = []
             for invoice in invoices:
                 references.append(str(invoice.reference))
+            if len(references) == 0:
+                references.append("_0")
 
             if request.method == "POST":
                 invoice_number = request.form['invoice_number']
@@ -529,7 +531,11 @@ def journal(company, email, username, session_key):
             references = []
             for journal in journals:
                 references.append(int(journal.reference.split("_")[-1]))
-            next_journal_number = max(references) + 1
+                next_journal_number = max(references) + 1
+            if len(references) == 0:
+                next_journal_number = 1
+            
+            
 
             if request.method == "POST":
                 journal_date = str(request.form['journalDate'])
@@ -710,7 +716,8 @@ def profitAndLoss(company, email, username, session_key):
 
                     if transaction.transaction_type == "journal" and account.nominal < 20000:
                         ytd_balance -= transaction.net_value
-                    ytd_balance += transaction.net_value
+                    else:
+                        ytd_balance += transaction.net_value
 
                 data[account.account_name] = [
                     monthly_balance, ytd_balance, account.nominal]
