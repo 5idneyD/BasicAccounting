@@ -200,6 +200,9 @@ div#nav div.nav-option:hover {
 	width: fit-content;
 	align-items: center;
 }
+
+/* The below few rows referencing the --webkit-scrollbar
+ are styling the overflow scroll bar */
 /* width */
 ::-webkit-scrollbar {
 	width: 10px;
@@ -872,4 +875,16 @@ table#products-list tbody tr td {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+div#productsTable {
+	width: 90vw;
+	display: grid;
+	grid-auto-rows: 2rem;
+}
+
+div#productsTable div {
+	display: grid;
+	grid-template-columns: 15vw 30vw 10vw 10vw 10vw 5vw;
+	min-height: fit-content;
 }

@@ -1,0 +1,28 @@
+{% set title="Log In" %}
+{% extends "homebase.html" %} {% block body %}
+<form id="form" method="post">
+	<div class="body-node" id="first" style="margin-top: -30%; width:30vw">
+		<div class="userLogo">
+			<div id="userHead"></div>
+			<div id="userBody"></div>
+		</div>
+		<div class="loginItem">
+			<input type="email" name="email" placeholder="email" aria-required="true" />
+		</div>
+		<div class="loginItem">
+			<input type="password" name="password" placeholder="password" aria-required="true" />
+		</div>
+		<div class="loginItem">
+			<button type="submit" name="signinButton">Log-In</button>
+		</div>
+		<div class="loginItem">
+			<a href="{{url_for('forgotPassword')}}">
+				<button type="button" name="signinButton">Forgot Password</button>
+			</a>
+		</div>
+		<div class="loginItem">
+			<p>{{message}}</p>
+		</div>
+	</div>
+</form>
+{% endblock %}

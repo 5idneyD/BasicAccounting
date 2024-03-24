@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+		<meta
+			name="keywords"
+			content="accounting, basic accounting, accountant, simple accounting, accounting software, no variance, variance accounting" />
+		<meta
+			name="description"
+			content="Accounting software that can handle all day-to-day activities of business accounting" />
+		{% if company %} {% set space, company, email, username, session_key, page = request.path.split("/") %}
+		<meta
+			name="logo"
+			id="{{url_for('dashboard', company=company, email=email, username=username, session_key=session_key )}}" />
+		{% else %}
+		<meta name="logo" id="{{url_for('index')}}" />
+		{% endif %} {% block meta %} {% endblock %}
+		<link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet" />
+
+		<link rel="stylesheet" href="{{url_for('static', filename='styles/new-main.min.css')}}" />
+
+		<link rel="icon" href="{{url_for('static', filename='images/favicon.ico')}}" type="image/x-icon" />
+		<title>No Variance</title>
+		{% if design %} {% endif %}
+	</head>
+	<body>
+		<div id="heading" data-expanded="true">
+			<div id="heading-top">
+				<div id="logo">No Variance <br />Accounting Software</div>
+				<div id="nav">
+					<div class="nav-option" data-href="/dashboard">Dashboard</div>
+					<div class="nav-option" data-href="/basket">Basket</div>
+					<div class="nav-option" data-href="/logout">Log Out</div>
+				</div>
+			</div>
+			<div id="heading-bottom">
+				<div id="user">Sales Hub</div>
+				<div class="box sales">Sales</div>
+				<div class="box purchase">Purchase</div>
+				<div class="box financial">Financial</div>
+				<div class="box other">Other</div>
+				<div class="sub-menu sales">
+					<div class="sub-menu-option" data-href="/addSalesInvoice">Add Sales Invoice</div>
+					<div class="sub-menu-option" data-href="/viewSalesInvoices">View Sales Invoices</div>
+					<div class="sub-menu-option" data-href="/Customers">View Customers</div>
+				</div>
+				<div class="sub-menu purchase">
+					<div class="sub-menu-option" data-href="/addPurchaseInvoice">Add Purchase Invoice</div>
+					<div class="sub-menu-option" data-href="/viewPurchaseInvoices">View Purchase Invoices</div>
+					<div class="sub-menu-option" data-href="/Suppliers">View Suppliers</div>
+				</div>
+				<div class="sub-menu financial">
+					<div class="sub-menu-option" data-href="/chartOfAccounts">Chart Of Accounts</div>
+					<div class="sub-menu-option" data-href="/trialBalance">Trial Balance</div>
+					<div class="sub-menu-option" data-href="/balanceSheet">Balance Sheet</div>
+					<div class="sub-menu-option" data-href="/profitAndLoss">Profit & Loss</div>
+					<div class="sub-menu-option" data-href="/journal">Post A Journal</div>
+					<div class="sub-menu-option" data-href="/nominalTransactions">Nominal Transactions</div>
+					<div class="sub-menu-option" data-href="/batchedJournals">Batched Journals</div>
+					<div class="sub-menu-option" data-href="/budget">Add Budget</div>
+					<div class="sub-menu-option" data-href="/bankRec">Bank Rec</div>
+					<div class="sub-menu-option" data-href="/agedDebt">Aged Debt</div>
+					<div class="sub-menu-option" data-href="/cashFlow">Cash Flow</div>
+				</div>
+				<div class="sub-menu other">
+					<div class="sub-menu-option" data-href="/admin">Admin</div>
+					<div class="sub-menu-option" data-href="/changePassword">Change Password</div>
+					<div class="sub-menu-option" data-href="/changeTheme">Change Theme</div>
+					<div class="sub-menu-option" data-href="/dashboard">Dashboard</div>
+					<div class="sub-menu-option" data-href="/help">Help</div>
+					<div class="sub-menu-option" data-href="/salesHub">Sales Hub</div>
+					<div class="sub-menu-option" data-href="/logout">Log Out</div>
+				</div>
+			</div>
+		</div>
+		<div id="toggle">
+			<div id="toggle-button">&uarr;</div>
+		</div>
+		<div id="body">
+			<div id="productsTable">
+				<div id="headingRow">
+					<div>Name</div>
+					<div>Description</div>
+					<div>Net Price</div>
+					<div>Vat Price</div>
+					<div>Total Price</div>
+					<div>Add To Basket</div>
+				</div>
+				{% for product in products %}
+				<div id="productRow">
+					<div>{{product.product_name}}</div>
+					<div>{{product.product_description}}</div>
+					<div>{{product.product_net_price}}</div>
+					<div>{{product.product_vat_price}}</div>
+					<div>{{product.product_net_price + product.product_vat_price}}</div>
+					<div class="plus-button">+</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+		<script defer>
+			// This is to import the logo, giving it different anchor refs depending on if its logged in or not
+			//let meta = document.head.querySelector("meta[name='logo']").id;
+			//let heading = document.querySelector("#heading");
+
+			//function logoResize(x) {
+			//	if (x.matches) {
+			//		let src = "{{url_for('static', filename='images/nv.png')}}";
+			//		return src;
+			//	} else {
+			//		let src = "{{url_for('static', filename='images/no_variance.png')}}";
+			//		return src;
+			//	}
+			//}
+			//let x = window.matchMedia("(max-width: 600px)");
+			//let img = logoResize(x);
+			//heading.innerHTML =
+			//	heading.innerHTML + "<a href=" + meta + "><img src=" + img + " alt='No Variance Logo'/></a>";
+		</script>
+
+		<script>
+			// This is for nav settings
+			let navOptions = document.querySelectorAll(".box");
+
+			// Design is imported at the top
+			let third = design[2];
+
+			navOptions.forEach(function (e) {
+				e.setAttribute("enlarged", "false");
+				e.addEventListener("click", function () {
+					let option = e.classList[1];
+					let subMenu = document.querySelector(".sub-menu." + option);
+
+					if (e.getAttribute("enlarged") == "true") {
+						e.setAttribute("enlarged", "false");
+						subMenu.style.display = "none";
+						e.style.border = "none";
+					} else {
+						e.setAttribute("enlarged", "true");
+
+						// Display submenu of option selected
+						subMenu.style.display = "grid";
+						e.style.border = "2px solid " + third;
+
+						// Close all other nav options
+						navOptions.forEach(function (q) {
+							let childOption = q.classList[1];
+							let childSubMenu = document.querySelector(".sub-menu." + childOption);
+
+							if (option == childOption) {
+							} else {
+								q.setAttribute("enlarged", "false");
+								childSubMenu.style.display = "none";
+								q.style.border = "none";
+							}
+						});
+					}
+				});
+			});
+		</script>
+
+		<script>
+			// This is to turn all the nav options in the submenu into link buttons
+			// Each option has the link ending as a data strribute called href
+			// This will just find the current page url and replace the ending with the
+			// option clicked on
+
+			let url = window.location.pathname;
+			url = url.substring(0, url.lastIndexOf("/"));
+
+			let options = document.querySelectorAll(".sub-menu-option, .nav-option");
+			options.forEach(function (e) {
+				e.addEventListener("click", function () {
+					let extension = e.dataset.href;
+					let newUrl = url + extension;
+					window.location.assign(newUrl);
+				});
+			});
+		</script>
+
+		<script>
+			// This script is for the toggle button to minimize the menu
+			// The heading-top will still be visible, just the heading bottom
+			// will be minimized
+
+			let heading = document.querySelector("#heading");
+			let headingBottom = document.querySelector("#heading-bottom");
+			let toggle = document.querySelector("#toggle-button");
+
+			toggle.addEventListener("click", function () {
+				if (heading.dataset.expanded == "true") {
+					headingBottom.style.display = "none";
+					heading.className = "toggle-up";
+					toggle.innerHTML = "&darr;";
+					heading.dataset.expanded = "false";
+				} else {
+					headingBottom.style.display = "grid";
+					heading.className = "toggle-down";
+					toggle.innerHTML = "&uarr;";
+					heading.dataset.expanded = "true";
+				}
+			});
+		</script>
+		<script defer>
+			// This script converts all zeros in tables to a dash for display reasons
+			let cells = document.querySelectorAll("td");
+
+			cells.forEach(function (cell) {
+				const cellValue = cell.innerHTML;
+				if (cellValue == 0) {
+					cell.innerHTML = "-";
+				}
+			});
+		</script>
+	</body>
+</html>

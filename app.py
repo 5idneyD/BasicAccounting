@@ -168,8 +168,14 @@ class SalesHubProducts(db.Model):
     product_net_price = db.Column(db.Float)
     product_vat_price = db.Column(db.Float)
     product_image = db.Column(db.String(128))
+    link = db.Column(db.String(32))
 
-
+class LogIns(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
+    user = db.Column(db.String(128))
+    ip_address = db.Column(db.String(128))
+    
 # Create database tables if they don't already exist
 with app.app_context():
     db.create_all()
@@ -294,6 +300,9 @@ def login():
             if pbkdf2_sha256.verify(password, user.password):
                 # Add user to current session
                 session[email] = os.urandom(12).hex()
+                login_details = LogIns(user=email, date=dt.datetime.now(), ip_address=str(request.remote_addr))
+                db.session.add(login_details)
+                db.session.commit()
                 # redirect to dashboard
                 return redirect(
                     url_for(
@@ -1974,7 +1983,7 @@ def cashFlow(company, email, username, sesion_key, theme):
 def salesHub(company, email, username, session_key, theme):
     sales_products = SalesHubProducts.query.filter(SalesHubProducts.company==company).all()
     
-    return render_template("salesHub.html", company=company, design=theme, sales_products=sales_products)
+    return render_template("salesHubDashboard.html", company=company, design=theme, sales_products=sales_products)
 
 @app.route("/<company>/<email>/<username>/<session_key>/salesHubAddProduct", methods=["POST", "GET"])
 @login_required
@@ -1995,6 +2004,19 @@ def salesHubAddProduct(company, email, username, session_key, theme):
         db.session.commit()
     
     return render_template("salesHubaddProduct.html", company=company, design=theme)
+
+# This login leads to the sales hub for clients
+@app.route("/salesHubLogin", methods=['POST', 'GET'])
+def salesHubLogin():
+    return render_template("salesHubLogin.html")
+
+# This is the sales hub that clients visit to place orders
+@app.route("/salesHub/<link>", methods=['POST', 'GET'])
+def salesHubClientSide(link):
+    products = SalesHubProducts.query.filter().all()
+    
+    return render_template("salesHubClientSide.html", products=products)
+
 
 debug = os.getenv("DEBUG")
 if __name__ == "__main__":
